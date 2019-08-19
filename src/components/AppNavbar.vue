@@ -7,17 +7,17 @@
         </b-navbar-item>
       </template>
       <template slot="start">
-        <b-navbar-item href="#">Overview</b-navbar-item>
-        <b-navbar-item href="#">Feedback</b-navbar-item>
+        <b-navbar-item href="/dashboard">Overview</b-navbar-item>
+        <b-navbar-item href="/feedback">Feedback</b-navbar-item>
       </template>
 
       <template slot="end">
         <b-navbar-item tag="div">
           <div class="buttons">
-            <a class="button is-primary">
+            <a class="button is-primary" href="/join">
               <strong>Sign up</strong>
             </a>
-            <a class="button is-light">Log in</a>
+            <a class="button is-light" href="/login">Log in</a>
           </div>
         </b-navbar-item>
       </template>

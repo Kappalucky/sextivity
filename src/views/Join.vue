@@ -1,9 +1,9 @@
 <template>
-  <section id="login">
-    <h1>Login</h1>
+  <section id="join">
+    <h1>Join</h1>
     <div class="card">
       <header class="card-header">
-        <p class="card-header-title">Login</p>
+        <p class="card-header-title">Join</p>
       </header>
       <div class="card-content">
         <div class="content">
@@ -28,14 +28,13 @@
           </div>
           <div class="field">
             <p class="control">
-              <button class="button is-success">Login</button>
+              <button class="button is-success">Join</button>
             </p>
           </div>
         </div>
       </div>
       <footer class="card-footer">
-        <a href="#" class="card-footer-item">Forgot Password?</a>
-        <a href="#" class="card-footer-item">No Account? Join!</a>
+        <a href="#" class="card-footer-item">Have Account? Login!</a>
       </footer>
     </div>
   </section>
@@ -72,45 +71,34 @@ export default {
       this.errorMsg = '';
       this.showLoginForm = !this.showLoginForm;
     },
-    togglePasswordReset() {
-      if (this.showForgotPassword) {
-        this.showLoginForm = true;
-        this.showForgotPassword = false;
-        this.passwordResetSuccess = false;
-      } else {
-        this.showLoginForm = false;
-        this.showForgotPassword = true;
-      }
-    },
-    login() {
+    signup() {
       this.performingRequest = true;
 
       fb.auth
-        .signInWithEmailAndPassword(
-          this.loginForm.email,
-          this.loginForm.password,
+        .createUserWithEmailAndPassword(
+          this.signupForm.email,
+          this.signupForm.password,
         )
         .then(user => {
           this.$store.commit('setCurrentUser', user.user);
-          this.$store.dispatch('fetchUserProfile');
-          this.performingRequest = false;
-          this.$router.push('/dashboard');
-        })
-        .catch(err => {
-          console.log(err);
-          this.performingRequest = false;
-          this.errorMsg = err.message;
-        });
-    },
-    resetPassword() {
-      this.performingRequest = true;
 
-      fb.auth
-        .sendPasswordResetEmail(this.passwordForm.email)
-        .then(() => {
-          this.performingRequest = false;
-          this.passwordResetSuccess = true;
-          this.passwordForm.email = '';
+          // Create user obj
+          fb.usersCollection
+            .doc(user.user.uid)
+            .set({
+              name: this.signupForm.name,
+              title: this.signupForm.title,
+            })
+            .then(() => {
+              this.$store.dispatch('fetchUserProfile');
+              this.performingRequest = false;
+              this.$router.push('/dashboard');
+            })
+            .catch(err => {
+              console.log(err);
+              this.performingRequest = false;
+              this.errorMsg = err.message;
+            });
         })
         .catch(err => {
           console.log(err);

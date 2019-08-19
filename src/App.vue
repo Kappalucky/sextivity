@@ -1,22 +1,25 @@
 <template>
   <div id="app">
-    <navbar />
+    <App-navbar />
     <router-view />
+    <App-footer />
   </div>
 </template>
 <script>
-import Navbar from "@/components/Navbar.vue";
+import AppNavbar from '@/components/AppNavbar.vue';
+import AppFooter from '@/components/AppFooter.vue';
+
 export default {
-  name: "Sextivity",
+  name: 'Sextivity',
   components: {
-    Navbar
-  }
+    AppNavbar,
+    AppFooter,
+  },
 };
 </script>
 <style>
-@import "https://use.fontawesome.com/releases/v5.3.1/css/all.css";
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
