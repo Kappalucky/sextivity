@@ -5,14 +5,14 @@ import Dashboard from './views/Dashboard.vue';
 import Feedback from './views/Feedback.vue';
 import Login from './views/Login.vue';
 import Join from './views/Join.vue';
+import ResetPW from './views/ResetPW.vue';
 
 Vue.use(Router);
 
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'home',
       component: Home,
@@ -31,6 +31,11 @@ export default new Router({
       path: '/join',
       name: 'join',
       component: Join,
+    },
+    {
+      path: '/reset-password',
+      name: 'resetPW',
+      component: ResetPW,
     },
     {
       path: '/feedback',

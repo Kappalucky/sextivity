@@ -1,6 +1,5 @@
 <template>
-  <section id="login">
-    <h1>Login</h1>
+  <section class="login">
     <div class="card">
       <header class="card-header">
         <p class="card-header-title">Login</p>
@@ -11,6 +10,7 @@
             <p class="control has-icons-left has-icons-right">
               <input class="input" type="email" placeholder="Email" />
               <span class="icon is-small is-left">
+                <b-icon pack="fas" icon="envelope"></b-icon>
                 <i class="fas fa-envelope"></i>
               </span>
               <span class="icon is-small is-right">
@@ -27,14 +27,14 @@
             </p>
           </div>
           <div class="field">
-            <p class="control">
+            <p class="control login-button">
               <button class="button is-success">Login</button>
             </p>
           </div>
         </div>
       </div>
       <footer class="card-footer">
-        <a href="#" class="card-footer-item">Forgot Password?</a>
+        <a href="/reset-password" class="card-footer-item">Forgot Password?</a>
         <a href="#" class="card-footer-item">No Account? Join!</a>
       </footer>
     </div>
@@ -51,18 +51,6 @@ export default {
         email: '',
         password: '',
       },
-      signupForm: {
-        name: '',
-        title: '',
-        email: '',
-        password: '',
-      },
-      passwordForm: {
-        email: '',
-      },
-      showLoginForm: true,
-      showForgotPassword: false,
-      passwordResetSuccess: false,
       performingRequest: false,
       errorMsg: '',
     };
@@ -70,17 +58,6 @@ export default {
   methods: {
     toggleForm() {
       this.errorMsg = '';
-      this.showLoginForm = !this.showLoginForm;
-    },
-    togglePasswordReset() {
-      if (this.showForgotPassword) {
-        this.showLoginForm = true;
-        this.showForgotPassword = false;
-        this.passwordResetSuccess = false;
-      } else {
-        this.showLoginForm = false;
-        this.showForgotPassword = true;
-      }
     },
     login() {
       this.performingRequest = true;
@@ -102,25 +79,20 @@ export default {
           this.errorMsg = err.message;
         });
     },
-    resetPassword() {
-      this.performingRequest = true;
-
-      fb.auth
-        .sendPasswordResetEmail(this.passwordForm.email)
-        .then(() => {
-          this.performingRequest = false;
-          this.passwordResetSuccess = true;
-          this.passwordForm.email = '';
-        })
-        .catch(err => {
-          console.log(err);
-          this.performingRequest = false;
-          this.errorMsg = err.message;
-        });
-    },
   },
 };
 </script>
 
 <style scoped>
+.login {
+  margin: 1rem;
+  padding: 1rem;
+}
+.card-header-title {
+  justify-content: center;
+}
+.login-button {
+  display: flex;
+  justify-content: center;
+}
 </style>

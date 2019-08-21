@@ -1,12 +1,27 @@
 <template>
-  <section id="join">
-    <h1>Join</h1>
+  <section class="join">
     <div class="card">
       <header class="card-header">
         <p class="card-header-title">Join</p>
       </header>
       <div class="card-content">
         <div class="content">
+          <div class="field">
+            <p class="control has-icons-left">
+              <input class="input" type="text" placeholder="First Name" />
+              <span class="icon is-small is-left">
+                <i class="fas fa-pen"></i>
+              </span>
+            </p>
+          </div>
+          <div class="field">
+            <p class="control has-icons-left">
+              <input class="input" type="text" placeholder="Last Name" />
+              <span class="icon is-small is-left">
+                <i class="fas fa-pen"></i>
+              </span>
+            </p>
+          </div>
           <div class="field">
             <p class="control has-icons-left has-icons-right">
               <input class="input" type="email" placeholder="Email" />
@@ -27,14 +42,22 @@
             </p>
           </div>
           <div class="field">
-            <p class="control">
+            <p class="control has-icons-left">
+              <input class="input" type="password" placeholder="Confirm Password" />
+              <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+              </span>
+            </p>
+          </div>
+          <div class="field">
+            <p class="control join-button">
               <button class="button is-success">Join</button>
             </p>
           </div>
         </div>
       </div>
       <footer class="card-footer">
-        <a href="#" class="card-footer-item">Have Account? Login!</a>
+        <a href="#" class="card-footer-item">Have An Account? Login!</a>
       </footer>
     </div>
   </section>
@@ -43,25 +66,15 @@
 //const fb = require('../firebaseConfig.js');
 
 export default {
-  name: 'Login',
+  name: 'Join',
   data() {
     return {
-      loginForm: {
-        email: '',
-        password: '',
-      },
       signupForm: {
-        name: '',
-        title: '',
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
       },
-      passwordForm: {
-        email: '',
-      },
-      showLoginForm: true,
-      showForgotPassword: false,
-      passwordResetSuccess: false,
       performingRequest: false,
       errorMsg: '',
     };
@@ -69,7 +82,6 @@ export default {
   methods: {
     toggleForm() {
       this.errorMsg = '';
-      this.showLoginForm = !this.showLoginForm;
     },
     signup() {
       this.performingRequest = true;
@@ -111,4 +123,15 @@ export default {
 </script>
 
 <style scoped>
+.join {
+  margin: 1rem;
+  padding: 1rem;
+}
+.card-header-title {
+  justify-content: center;
+}
+.join-button {
+  display: flex;
+  justify-content: center;
+}
 </style>

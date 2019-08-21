@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section class="navigation">
     <b-navbar>
       <template slot="brand">
         <b-navbar-item href="/">
@@ -12,7 +12,7 @@
       </template>
 
       <template slot="end">
-        <b-navbar-item tag="div">
+        <b-navbar-item tag="div" class="navbar-dropdown-end">
           <div class="buttons">
             <a class="button is-primary" href="/join">
               <strong>Sign up</strong>
@@ -32,4 +32,13 @@ export default {
 </script>
 
 <style scoped>
+.navigation {
+  /*border-bottom: 1px solid #e2e2e2;*/
+  margin-bottom: 1rem;
+  box-shadow: -1px -7px 9px 5px black;
+}
+.navbar-dropdown-end {
+  display: flex;
+  justify-content: center;
+}
 </style>
