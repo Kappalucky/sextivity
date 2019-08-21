@@ -1,21 +1,34 @@
 <template>
   <div>
     <h1>Overview</h1>
-    <section>
-      <h1>Upper Columns</h1>
+    <section class="overview">
+      <div class="columns is-mobile">
+        <div class="column">
+          <div class="card">
+            <span class="overview_number">{{partnersAmount}}</span>
+            <p class="overview_text">Partners</p>
+          </div>
+        </div>
+        <div class="column">
+          <div class="card">
+            <span class="overview_number">{{sexAmount}}</span>
+            <p class="overview_text">times had sex</p>
+          </div>
+        </div>
+        <!--<div class="column">
+        </div>
+        <div class="column"></div>-->
+      </div>
     </section>
-    <section>
+    <section class="partners">
       <h1>List of Partners</h1>
       <b-field grouped group-multiline>
-        <b-select v-model="perPage" :disabled="!isPaginated">
+        <b-select v-model="perPage">
           <option value="5">5 per page</option>
           <option value="10">10 per page</option>
           <option value="15">15 per page</option>
           <option value="20">20 per page</option>
         </b-select>
-        <div class="control">
-          <button class="button" @click="currentPage = 2" :disabled="!isPaginated">Set page to 2</button>
-        </div>
       </b-field>
 
       <b-table
@@ -133,6 +146,8 @@ export default {
   data() {
         return {
             data,
+            sexAmount: 17,
+            partnersAmount: 3,
             isPaginated: true,
             isPaginationSimple: false,
             paginationPosition: 'bottom',
@@ -147,4 +162,23 @@ export default {
 </script>
 
 <style scoped>
+.overview {
+  margin: 1rem;
+  padding: 1rem;
+}
+.overview_number {
+  font-size: 3rem;
+  font-weight: 500;
+}
+.overview_text {
+  font-size: 1rem;
+  font-weight: 300;
+  font-family: sans-serif;
+  text-align: center;
+  text-transform: capitalize;
+}
+.partners {
+  margin: 1rem;
+  padding: 1rem;
+}
 </style>
