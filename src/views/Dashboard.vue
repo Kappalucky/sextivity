@@ -3,17 +3,19 @@
     <h1 class="dashboard-heading">Overview</h1>
     <hr />
     <section class="overview">
-      <div class="columns is-mobile">
-        <div class="column">
-          <div class="card">
-            <span class="overview-number">{{partnersAmount}}</span>
-            <p class="overview-text">Partners</p>
+      <div class="container is-widescreen">
+        <div class="columns is-mobile">
+          <div class="column">
+            <div class="card">
+              <span class="overview-number">{{partnersAmount}}</span>
+              <p class="overview-text">Partners</p>
+            </div>
           </div>
-        </div>
-        <div class="column">
-          <div class="card">
-            <span class="overview-number">{{sexAmount}}</span>
-            <p class="overview-text">times had sex</p>
+          <div class="column">
+            <div class="card">
+              <span class="overview-number">{{sexAmount}}</span>
+              <p class="overview-text">times had sex</p>
+            </div>
           </div>
         </div>
       </div>

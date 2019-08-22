@@ -1,64 +1,66 @@
 <template>
   <section class="join">
-    <div class="card">
-      <header class="card-header">
-        <p class="card-header-title">Join</p>
-      </header>
-      <div class="card-content">
-        <div class="content">
-          <div class="field">
-            <p class="control has-icons-left">
-              <input class="input" type="text" placeholder="First Name" />
-              <span class="icon is-small is-left">
-                <i class="fas fa-pen"></i>
-              </span>
-            </p>
-          </div>
-          <div class="field">
-            <p class="control has-icons-left">
-              <input class="input" type="text" placeholder="Last Name" />
-              <span class="icon is-small is-left">
-                <i class="fas fa-pen"></i>
-              </span>
-            </p>
-          </div>
-          <div class="field">
-            <p class="control has-icons-left has-icons-right">
-              <input class="input" type="email" placeholder="Email" />
-              <span class="icon is-small is-left">
-                <i class="fas fa-envelope"></i>
-              </span>
-              <span class="icon is-small is-right">
-                <i class="fas fa-check"></i>
-              </span>
-            </p>
-          </div>
-          <div class="field">
-            <p class="control has-icons-left">
-              <input class="input" type="password" placeholder="Password" />
-              <span class="icon is-small is-left">
-                <i class="fas fa-lock"></i>
-              </span>
-            </p>
-          </div>
-          <div class="field">
-            <p class="control has-icons-left">
-              <input class="input" type="password" placeholder="Confirm Password" />
-              <span class="icon is-small is-left">
-                <i class="fas fa-lock"></i>
-              </span>
-            </p>
-          </div>
-          <div class="field">
-            <p class="control join-button">
-              <button class="button is-success">Join</button>
-            </p>
+    <div class="container">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">Join</p>
+        </header>
+        <div class="card-content">
+          <div class="content">
+            <div class="field">
+              <p class="control has-icons-left">
+                <input class="input" type="text" placeholder="First Name" />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-pen"></i>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <p class="control has-icons-left">
+                <input class="input" type="text" placeholder="Last Name" />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-pen"></i>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <p class="control has-icons-left has-icons-right">
+                <input class="input" type="email" placeholder="Email" />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
+                <span class="icon is-small is-right">
+                  <i class="fas fa-check"></i>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <p class="control has-icons-left">
+                <input class="input" type="password" placeholder="Password" />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-lock"></i>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <p class="control has-icons-left">
+                <input class="input" type="password" placeholder="Confirm Password" />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-lock"></i>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <p class="control join-button">
+                <button class="button is-success">Join</button>
+              </p>
+            </div>
           </div>
         </div>
+        <footer class="card-footer">
+          <a href="#" class="card-footer-item">Have An Account? Login!</a>
+        </footer>
       </div>
-      <footer class="card-footer">
-        <a href="#" class="card-footer-item">Have An Account? Login!</a>
-      </footer>
     </div>
   </section>
 </template>
@@ -133,5 +135,8 @@ export default {
 .join-button {
   display: flex;
   justify-content: center;
+}
+.container {
+  width: 50%;
 }
 </style>

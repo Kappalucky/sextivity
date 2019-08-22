@@ -1,18 +1,20 @@
 <template>
   <section class="forgot-password">
-    <div class="card">
-      <header class="card-header">
-        <p class="card-header-title">Forgot Password</p>
-      </header>
-      <div class="card-content">
-        <div class="content">
-          <div class="field">
-            <input class="input" type="text" placeholder="Email" />
-          </div>
-          <div class="field">
-            <p class="control forgot-button">
-              <button class="button is-success">Reset</button>
-            </p>
+    <div class="container">
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">Forgot Password</p>
+        </header>
+        <div class="card-content">
+          <div class="content">
+            <div class="field">
+              <input class="input" type="text" placeholder="Email" />
+            </div>
+            <div class="field">
+              <p class="control reset-button">
+                <button class="button is-success">Reset</button>
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -53,4 +55,18 @@ export default {
 };
 </script>
 <style scoped>
+.forgot-password {
+  margin: 1rem;
+  padding: 1rem;
+}
+.card-header-title {
+  justify-content: center;
+}
+.reset-button {
+  display: flex;
+  justify-content: center;
+}
+.container {
+  width: 50%;
+}
 </style>

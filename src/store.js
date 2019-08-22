@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
+const fb = require('./firebaseConfig.js');
+
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
   state: {
     currentUser: null,
     userProfile: {}, // User details
@@ -39,5 +41,30 @@ export default new Vuex.Store({
       commit('setPartners', null);
       commit('setSex', null);
     },
+    fetchUserProfile({ commit, state }) {
+      fb.usersCollection
+        .doc(state.currentUser.uid)
+        .get()
+        .then(res => {
+          commit('setUserProfile', res.data());
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
   },
+});
+
+export default store;
+
+// Handle page reload
+fb.auth.onAuthStateChanged(user => {
+  if (user) {
+    store.commit('setCurrentUser', user);
+    store.dispatch('fetchUserProfile');
+
+    fb.usersCollection.doc(user.uid).onSnapshot(doc => {
+      store.commit('setUserProfile', doc.data());
+    });
+  }
 });
