@@ -8,42 +8,46 @@
         <div class="card-content">
           <div class="content">
             <div class="field">
-              <p class="control has-icons-left has-icons-right">
-                <input class="input" type="email" placeholder="Email" />
-                <span class="icon is-small is-left">
-                  <b-icon pack="fas" icon="envelope"></b-icon>
-                  <i class="fas fa-envelope"></i>
-                </span>
-                <span class="icon is-small is-right">
-                  <i class="fas fa-check"></i>
-                </span>
+              <p class="control">
+                <label for="email">Email</label>
+                <input
+                  class="input"
+                  id="email"
+                  type="email"
+                  placeholder="you@email.com"
+                  v-model.trim="loginForm.email"
+                />
               </p>
             </div>
             <div class="field">
-              <p class="control has-icons-left">
-                <input class="input" type="password" placeholder="Password" />
-                <span class="icon is-small is-left">
-                  <i class="fas fa-lock"></i>
-                </span>
+              <p class="control">
+                <label for="password">Password</label>
+                <input
+                  class="input"
+                  id="password"
+                  type="password"
+                  placeholder="********"
+                  v-model.trim="loginForm.password"
+                />
               </p>
             </div>
             <div class="field">
               <p class="control login-button">
-                <button class="button is-success">Login</button>
+                <button class="button is-success" @click.enter="login">Login</button>
               </p>
             </div>
           </div>
         </div>
         <footer class="card-footer">
           <a href="/reset-password" class="card-footer-item">Forgot Password?</a>
-          <a href="#" class="card-footer-item">No Account? Join!</a>
+          <a href="/join" class="card-footer-item">No Account? Join!</a>
         </footer>
       </div>
     </div>
   </section>
 </template>
 <script>
-//const fb = require('../firebaseConfig.js');
+const fb = require('../firebaseConfig.js');
 
 export default {
   name: 'Login',

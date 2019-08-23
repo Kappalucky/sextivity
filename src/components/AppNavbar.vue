@@ -6,12 +6,24 @@
           <p>Sextivity</p>
         </b-navbar-item>
       </template>
-      <template slot="start">
+      <template v-if="!currentUser" slot="start">
         <b-navbar-item href="/dashboard">Overview</b-navbar-item>
         <b-navbar-item href="/feedback">Feedback</b-navbar-item>
       </template>
-
-      <template slot="end">
+      <!--<template v-else slot="start">
+        <b-navbar-item href="/dashboard">Overview</b-navbar-item>
+        <b-navbar-item href="/features">Feedback</b-navbar-item>
+      </template>-->
+      <template v-if="!currentUser" slot="end">
+        <b-navbar-item tag="div" class="navbar-dropdown-end">
+          <div class="buttons">
+            <a class="button is-danger" @click="logout">
+              <strong>logout</strong>
+            </a>
+          </div>
+        </b-navbar-item>
+      </template>
+      <template v-else slot="end">
         <b-navbar-item tag="div" class="navbar-dropdown-end">
           <div class="buttons">
             <a class="button is-primary" href="/join">
@@ -26,8 +38,20 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex';
+
 export default {
   name: 'Navbar',
+  computed: {
+    ...mapState('currentUser'),
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout').then(() => {
+        this.$router.push('/');
+      });
+    },
+  },
 };
 </script>
 

@@ -52,6 +52,12 @@ const store = new Vuex.Store({
           console.log(err);
         });
     },
+    logout({ commit }) {
+      commit('clearData');
+    },
+  },
+  getters: {
+    isLoggedIn: state => !!state.currentUser,
   },
 });
 

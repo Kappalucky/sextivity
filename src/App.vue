@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <App-navbar :currentUser = currentUser />
+    <App-navbar />
     <main>
       <router-view />
     </main>
@@ -8,7 +8,6 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex';
 import AppNavbar from '@/components/AppNavbar.vue';
 import AppFooter from '@/components/AppFooter.vue';
 
@@ -17,9 +16,6 @@ export default {
   components: {
     AppNavbar,
     AppFooter,
-  },
-  computed: {
-    ...mapState(['currentUser']),
   },
 };
 </script>
