@@ -38,8 +38,8 @@ const store = new Vuex.Store({
     clearData({ commit }) {
       commit('setCurrentUser', null);
       commit('setUserProfile', {});
-      commit('setPartners', null);
-      commit('setSex', null);
+      commit('setPartners', []);
+      commit('setSex', []);
     },
     fetchUserProfile({ commit, state }) {
       fb.usersCollection
@@ -55,9 +55,6 @@ const store = new Vuex.Store({
     logout({ commit }) {
       commit('clearData');
     },
-  },
-  getters: {
-    isLoggedIn: state => !!state.currentUser,
   },
 });
 

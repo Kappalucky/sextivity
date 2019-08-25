@@ -29,6 +29,9 @@
           <option value="15">15 per page</option>
           <option value="20">20 per page</option>
         </b-select>
+        <div class="control add-button">
+          <button class="button is-primary" @click="isModalActive = true">Add Partner</button>
+        </div>
       </b-field>
 
       <b-table
@@ -74,12 +77,17 @@
         </template>
       </b-table>
     </section>
+    <section class="model">
+      <add-partner-modal />
+    </section>
     <section class="calendar">
       <h1>Calendar</h1>
     </section>
   </div>
 </template>
 <script>
+import AddPartnerModal from '@/components/AddPartnerModal.vue';
+
 const data = [
   {
     id: 1,
@@ -445,6 +453,9 @@ const data = [
 
 export default {
   name: 'Dashboard',
+  components: {
+    AddPartnerModal,
+  },
   data() {
     return {
       data,
@@ -458,7 +469,13 @@ export default {
       sortIconSize: 'is-small',
       currentPage: 1,
       perPage: 5,
+      isModalActive: false,
     };
+  },
+  methods: {
+    close() {
+      this.isModalActive = !this.isModalActive;
+    }
   },
 };
 </script>
@@ -485,5 +502,8 @@ export default {
 .partners {
   margin: 1rem;
   padding: 1rem;
+}
+.add-button {
+  margin-left: auto;
 }
 </style>

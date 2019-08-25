@@ -33,7 +33,7 @@
             </div>
             <div class="field">
               <p class="control login-button">
-                <button class="button is-success" @click.enter="login">Login</button>
+                <button class="button is-success" @click="login()">Login</button>
               </p>
             </div>
           </div>

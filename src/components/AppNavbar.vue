@@ -6,7 +6,7 @@
           <p>Sextivity</p>
         </b-navbar-item>
       </template>
-      <template v-if="!currentUser" slot="start">
+      <template v-if="currentUser" slot="start">
         <b-navbar-item href="/dashboard">Overview</b-navbar-item>
         <b-navbar-item href="/feedback">Feedback</b-navbar-item>
       </template>
@@ -14,7 +14,7 @@
         <b-navbar-item href="/dashboard">Overview</b-navbar-item>
         <b-navbar-item href="/features">Feedback</b-navbar-item>
       </template>-->
-      <template v-if="!currentUser" slot="end">
+      <template v-if="currentUser" slot="end">
         <b-navbar-item tag="div" class="navbar-dropdown-end">
           <div class="buttons">
             <a class="button is-danger" @click="logout">
@@ -38,18 +38,26 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+const fb = require('../firebaseConfig.js');
 
 export default {
   name: 'Navbar',
   computed: {
-    ...mapState('currentUser'),
+    currentUser() {
+      return this.$store.state.currentUser;
+    },
   },
   methods: {
     logout() {
-      this.$store.dispatch('logout').then(() => {
-        this.$router.push('/');
-      });
+      fb.auth
+        .signOut()
+        .then(() => {
+          this.$store.dispatch('clearData');
+          this.$router.push('/login');
+        })
+        .catch(error => {
+          console.log(error);
+        });
     },
   },
 };
