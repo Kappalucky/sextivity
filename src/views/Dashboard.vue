@@ -54,7 +54,7 @@
 
           <b-table-column
             field="user.first_name"
-            label="First Name"
+            label="Name/Nickname"
             sortable
           >{{ props.row.user.first_name }}</b-table-column>
 
@@ -70,8 +70,14 @@
 
           <b-table-column label="Gender">
             <span>
-              <b-icon pack="fas" :icon="props.row.gender === 'Male' ? 'mars' : 'venus'"></b-icon>
+              <b-icon pack="fas" :icon="props.row.gender === 'Male' ? 'fa-mars' : 'fa-venus'"></b-icon>
               {{ props.row.gender }}
+            </span>
+          </b-table-column>
+          <b-table-column centered>
+            <span class="partners-table-buttons">
+              <button class="button is-primary" @click="partnerEdit()">Edit</button>
+              <button class="button is-danger" @click="partnerDelete()">Delete</button>
             </span>
           </b-table-column>
         </template>
@@ -88,6 +94,7 @@
 <script>
 import AddPartnerModal from '@/components/AddPartnerModal.vue';
 
+const fb = require('../firebaseConfig.js');
 const data = [
   {
     id: 1,
@@ -475,7 +482,11 @@ export default {
   methods: {
     close() {
       this.isModalActive = !this.isModalActive;
-    }
+    },
+    partnerEdit() {
+    },
+    partnerDelete() {
+    },
   },
 };
 </script>
@@ -502,6 +513,9 @@ export default {
 .partners {
   margin: 1rem;
   padding: 1rem;
+}
+.partners-table-buttons > button {
+  margin: 5px;
 }
 .add-button {
   margin-left: auto;
