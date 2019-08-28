@@ -42,7 +42,12 @@
       </section>
       <footer class="modal-card-foot footer-buttons">
             <button class="button" type="button" v-on:click="$parent.close()">Close</button>
-            <button class="button is-primary" @click="createPartner()">Add</button>
+            <template>
+              <button class="button is-primary" @click="createPartner()">Add</button>
+            </template>
+            <!--<template v-else>
+              <button class="button is-primary" @click="editPartner()">Edit</button>
+            </template>-->
       </footer>
     </div>
         </b-modal>
@@ -58,6 +63,7 @@ export default {
       location: '',
       approxDateMet: new Date(),
       description: '',
+      editModal: false,
     };
   },
   methods: {
@@ -75,6 +81,9 @@ export default {
         }).catch((error) => {
             console.log(error);
         });
+      },
+      editPartner() {
+
       },
   },
 };

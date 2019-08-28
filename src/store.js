@@ -52,6 +52,24 @@ const store = new Vuex.Store({
           console.log(err);
         });
     },
+    fetchPartners({ commit, state }) {
+      fb.partnersCollection
+        .where('userId', '==', state.currentUser.uid)
+        .get()
+        .then(querySnapshot => {
+          const partnersArray = [];
+
+          querySnapshot.forEach(doc => {
+            const partner = doc.data();
+            partnersArray.push(partner);
+          });
+
+          commit('setPartners', partnersArray);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     logout({ commit }) {
       commit('clearData');
     },
@@ -65,6 +83,7 @@ fb.auth.onAuthStateChanged(user => {
   if (user) {
     store.commit('setCurrentUser', user);
     store.dispatch('fetchUserProfile');
+    store.dispatch('fetchPartners');
 
     fb.usersCollection.doc(user.uid).onSnapshot(doc => {
       store.commit('setUserProfile', doc.data());

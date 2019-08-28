@@ -7,7 +7,7 @@
         <div class="columns is-mobile">
           <div class="column">
             <div class="card">
-              <span class="overview-number">{{partnersAmount}}</span>
+              <span class="overview-number">{{partners.length}}</span>
               <p class="overview-text">Partners</p>
             </div>
           </div>
@@ -35,7 +35,7 @@
       </b-field>
 
       <b-table
-        :data="data"
+        :data="partners"
         :paginated="isPaginated"
         :per-page="perPage"
         :current-page.sync="currentPage"
@@ -50,30 +50,29 @@
         aria-current-label="Current page"
       >
         <template slot-scope="props">
-          <b-table-column field="id" label="ID" width="40" sortable numeric>{{ props.row.id }}</b-table-column>
-
           <b-table-column
-            field="user.first_name"
+            field="partners.name"
             label="Name/Nickname"
             sortable
-          >{{ props.row.user.first_name }}</b-table-column>
-
-          <b-table-column
-            field="user.last_name"
-            label="Last Name"
-            sortable
-          >{{ props.row.user.last_name }}</b-table-column>
-
-          <b-table-column field="date" label="Date" sortable centered>
-            <span class="tag is-success">{{ new Date(props.row.date).toLocaleDateString() }}</span>
-          </b-table-column>
+          >{{ props.row.name }}</b-table-column>
 
           <b-table-column label="Gender">
             <span>
-              <b-icon pack="fas" :icon="props.row.gender === 'Male' ? 'fa-mars' : 'fa-venus'"></b-icon>
+              <b-icon pack="fas" :icon="partners.gender === 'Male' ? 'fa-mars' : 'fa-venus'"></b-icon>
               {{ props.row.gender }}
             </span>
           </b-table-column>
+
+          <b-table-column
+            field="user.last_name"
+            label="Location"
+            sortable
+          >{{ props.row.location }}</b-table-column>
+
+          <!--<b-table-column field="seconds" label="Date Met" sortable centered>
+            <span class="tag is-success">{{ new Date(props.row.approxDateMet.seconds).toLocaleDateString() }}</span>
+          </b-table-column>-->
+
           <b-table-column centered>
             <span class="partners-table-buttons">
               <button class="button is-primary" @click="partnerEdit()">Edit</button>
@@ -467,7 +466,6 @@ export default {
     return {
       data,
       sexAmount: 17,
-      partnersAmount: 3,
       isPaginated: true,
       isPaginationSimple: false,
       paginationPosition: 'bottom',
@@ -477,7 +475,13 @@ export default {
       currentPage: 1,
       perPage: 5,
       isModalActive: false,
+      showPartnerModal: false,
     };
+  },
+  computed: {
+    partners() {
+      return this.$store.state.partners;
+    },
   },
   methods: {
     close() {
