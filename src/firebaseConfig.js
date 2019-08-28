@@ -5,13 +5,13 @@ import 'firebase/firestore';
 
 // Initialize Firebase
 const config = {
-  apiKey: 'AIzaSyAHIvVRud6EL5xuViTDIeuxjJkqR8kcBO8',
-  authDomain: 'sextivity-cef50.firebaseapp.com',
-  databaseURL: 'https://sextivity-cef50.firebaseio.com',
-  projectId: 'sextivity-cef50',
-  storageBucket: 'sextivity-cef50.appspot.com',
-  messagingSenderId: '818915923976',
-  appId: '1:818915923976:web:d007c864e34c8540',
+  apiKey: process.env.VUE_APP_FIREBASE_SECRET_KEY,
+  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.VUE_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_ID,
+  appId: process.env.VUE_APP_FIREBASE_APP_ID,
 };
 
 firebase.initializeApp(config);
@@ -19,7 +19,9 @@ firebase.initializeApp(config);
 // Firebase utils
 const db = firebase.firestore();
 const auth = firebase.auth();
-const { currentUser } = auth;
+const {
+  currentUser
+} = auth;
 
 // Firebase collections
 const usersCollection = db.collection('users'); // User Profile data
