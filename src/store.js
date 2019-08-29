@@ -35,13 +35,18 @@ const store = new Vuex.Store({
     },
   },
   actions: {
-    clearData({ commit }) {
+    clearData({
+      commit
+    }) {
       commit('setCurrentUser', null);
       commit('setUserProfile', {});
       commit('setPartners', []);
       commit('setSex', []);
     },
-    fetchUserProfile({ commit, state }) {
+    fetchUserProfile({
+      commit,
+      state
+    }) {
       fb.usersCollection
         .doc(state.currentUser.uid)
         .get()
@@ -52,16 +57,22 @@ const store = new Vuex.Store({
           console.log(err);
         });
     },
-    fetchPartners({ commit, state }) {
+    fetchPartners({
+      commit,
+      state
+    }) {
       fb.partnersCollection
         .where('userId', '==', state.currentUser.uid)
         .get()
         .then(querySnapshot => {
           const partnersArray = [];
+          let index = 0;
 
           querySnapshot.forEach(doc => {
             const partner = doc.data();
+            partner.id = index;
             partnersArray.push(partner);
+            index += 1;
           });
 
           commit('setPartners', partnersArray);
@@ -70,7 +81,9 @@ const store = new Vuex.Store({
           console.log(err);
         });
     },
-    logout({ commit }) {
+    logout({
+      commit
+    }) {
       commit('clearData');
     },
   },
