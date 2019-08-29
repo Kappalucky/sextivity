@@ -63,7 +63,6 @@ export default {
       location: '',
       approxDateMet: new Date(),
       description: '',
-      editModal: false,
     };
   },
   methods: {

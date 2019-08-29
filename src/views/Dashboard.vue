@@ -2,6 +2,8 @@
   <div>
     <h1 class="dashboard-heading">Overview</h1>
     <hr />
+
+    <!-- Section cards -->
     <section class="overview">
       <div class="container is-widescreen">
         <div class="columns is-mobile">
@@ -20,6 +22,9 @@
         </div>
       </div>
     </section>
+    <!-- End Section Cards -->
+
+    <!-- Partners Datatable -->
     <section class="partners">
       <h1>List of Partners</h1>
       <b-field grouped group-multiline>
@@ -82,16 +87,31 @@
         </template>
       </b-table>
     </section>
-    <section class="model">
+    <!-- End Partners Datatable -->
+
+    <!-- Add Partner Modal -->
+    <section class="modal">
       <add-partner-modal />
     </section>
+    <!-- End Partner Modal -->
+
+    <!-- Edit Partner Modal -->
+    <section class="modal">
+      <edit-partner-modal :parentPartner = "partner" />
+    </section>
+    <!-- End Edit Partner Modal -->
+
+    <!-- Calendar Component -->
     <section class="calendar">
       <h1>Calendar</h1>
     </section>
+    <!-- End Calendar Component -->
+
   </div>
 </template>
 <script>
 import AddPartnerModal from '@/components/AddPartnerModal.vue';
+import EditPartnerModal from '@/components/EditPartnerModal.vue';
 
 const fb = require('../firebaseConfig.js');
 
@@ -99,6 +119,7 @@ export default {
   name: 'Dashboard',
   components: {
     AddPartnerModal,
+    EditPartnerModal,
   },
   data() {
     return {
@@ -112,8 +133,15 @@ export default {
       currentPage: 1,
       perPage: 5,
       isModalActive: false,
-      showPartnerModal: false,
-      partner: '',
+      editPartnerModal: false,
+      partner: {
+        id: '',
+        name: '',
+        gender: '',
+        location: '',
+        approxDateMet: new Date(),
+        description: '',
+      },
     };
   },
   computed: {
@@ -125,6 +153,9 @@ export default {
     close() {
       this.isModalActive = !this.isModalActive;
     },
+    closeEdit() {
+      this.editPartnerModal = !this.editPartnerModal;
+    },
     partnerEdit(id) {
       // Search partner array by id number which is the index number
       let created = this.$store.state.partners[id].createdOn;
@@ -132,24 +163,14 @@ export default {
       // Search partners collection using timestamp to obtain uid, save to data()
       fb.partnersCollection.where('createdOn', '==', created).get().then((docs) => {
         docs.forEach((doc) => {
-          this.partner = doc.id;
-          console.log(this.partner);
+          console.log(doc);
+          this.partner.id = doc.id;
         });
       });
 
-      // Using saved uid, update specific partners information
-      fb.partnersCollection.doc(this.partner).update({
-        updatedOn: new Date(),
-        name: this.name,
-        gender: this.gender,
-        location: this.location,
-        approxDateMet: this.approxDateMet,
-        description: this.description,
-      }).then(() => {
-        // Close Modal
-      }).catch((error) => {
-        console.log(error);
-      });
+      const object = this.$store.state.partners[id];
+      this.partner = Object.assign({}, object);
+      this.editPartnerModal = true;
     },
     partnerDelete(id) {
     },
