@@ -54,45 +54,35 @@ const fb = require('../firebaseConfig.js');
 export default {
   data() {
     return {
-    childPartner: {
-      name: '',
-      gender: '',
-      location: '',
-      approxDateMet: new Date(),
-      description: '',
-    },
+      childPartner: {
+        name: '',
+        gender: '',
+        location: '',
+        approxDateMet: new Date(),
+        description: '',
+      },
     };
   },
   props: {
-      partner: {
-        type: Object,
-      },
+    partner: {
+      type: Object,
+    },
   },
   methods: {
-      updatePartner() {
-        // Using saved uid, update specific partners information
-      fb.partnersCollection.doc(this.partner.id).update({
-        updatedOn: new Date(),
-        name: this.partner.name,
-        gender: this.partner.gender,
-        location: this.partner.location,
-        approxDateMet: this.partner.approxDateMet,
-        description: this.partner.description,
-      }).then(() => {
-        this.$parent.closeEdit();
-      }).catch((error) => {
-        console.log(error);
-      });
-      },
+    updatePartner() {
+      this.$store.dispatch('updatePartner', this.partner)
+      .then(() => this.$parent.closeEdit();)
+      .catch(error => console.error(error));
+    },
   },
 };
 </script>
 <style scoped>
 .gender-select {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 .footer-buttons {
-    justify-content: center;
+  justify-content: center;
 }
 </style>

@@ -8,6 +8,8 @@ import Feedback from './views/Feedback.vue';
 import Login from './views/Login.vue';
 import Join from './views/Join.vue';
 import ResetPW from './views/ResetPW.vue';
+import Error404 from './views/Error404.vue';
+import Error500 from './views/Error500.vue';
 
 Vue.use(Router);
 
@@ -55,8 +57,16 @@ const router = new Router({
         requiresAuth: true,
       },
     },
-    /* TO-DO: Add Error page routes 404, 500...etc
-              Add Profile routes */
+    {
+      path: '/404',
+      name: 'Error404',
+      component: Error404,
+    },
+    {
+      path: '/500',
+      name: 'Error500',
+      component: Error500,
+    },
   ],
 });
 

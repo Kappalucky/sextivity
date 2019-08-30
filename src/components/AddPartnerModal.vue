@@ -7,11 +7,11 @@
       <section class="modal-card-body">
 
         <b-field label="Name/Nickname">
-          <b-input type="text" v-model.trim="name" placeholder="Guy from Tinder" required></b-input>
+          <b-input type="text" v-model.trim="partner.name" placeholder="Guy from Tinder" required></b-input>
         </b-field>
 
         <b-field label="Gender">
-            <b-select class="gender-select" placeholder="Gender" v-model="gender">
+            <b-select class="gender-select" placeholder="Gender" v-model="partner.gender">
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Transgender">Transgender</option>
@@ -19,13 +19,13 @@
         </b-field>
 
         <b-field label="Description">
-            <b-input placeholder="Brown eyes, plump sexy lips, freckles..." maxlength="200" type="textarea" v-model="description"></b-input>
+            <b-input placeholder="Brown eyes, plump sexy lips, freckles..." maxlength="200" type="textarea" v-model="partner.description"></b-input>
         </b-field>
 
         <b-field label="Location Met">
           <b-input
             type="text"
-            v-model.trim="location"
+            v-model.trim="partner.location"
             placeholder="London, England"
             required
           ></b-input>
@@ -35,7 +35,7 @@
         <b-datepicker
             type="month"
             placeholder="Click to select..."
-            v-model="approxDateMet"
+            v-model="partner.approxDateMet"
             icon="calendar-today">
         </b-datepicker>
         </b-field>
@@ -50,33 +50,29 @@
   </b-modal>
 </template>
 <script>
+import { mapState } from 'vuex';
 const fb = require('../firebaseConfig.js');
 
 export default {
   data() {
     return {
-      name: '',
-      gender: '',
-      location: '',
-      approxDateMet: new Date(),
-      description: '',
+      partner: {
+        name: '',
+        gender: '',
+        location: '',
+        approxDateMet: new Date(),
+        description: '',
+      },
     };
+  },
+  computed: {
+    ...mapState(['currentUser'])
   },
   methods: {
       createPartner() {
-        fb.partnersCollection.add({
-          createdOn: new Date(),
-          userId: this.$store.state.currentUser.uid,
-          name: this.name,
-          gender: this.gender,
-          location: this.location,
-          approxDateMet: this.approxDateMet,
-          description: this.description,
-        }).then((ref) => {
-          this.$parent.close();
-        }).catch((error) => {
-          console.log(error);
-        });
+        this.$store.dispatch('newPartner', this.partner)
+        .then(() => this.$parent.close();)
+        .catch(error => console.error(error));
       },
   },
 };

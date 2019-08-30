@@ -47,6 +47,7 @@
   </section>
 </template>
 <script>
+import { mapState } from 'vuex';
 const fb = require('../firebaseConfig.js');
 
 export default {
@@ -61,6 +62,9 @@ export default {
       errorMsg: '',
     };
   },
+  computed: {
+    ...mapState(['authError', 'authStatus'])
+  },
   methods: {
     toggleForm() {
       this.errorMsg = '';
@@ -68,22 +72,15 @@ export default {
     login() {
       this.performingRequest = true;
 
-      fb.auth
-        .signInWithEmailAndPassword(
-          this.loginForm.email,
-          this.loginForm.password,
-        )
-        .then(user => {
-          this.$store.commit('setCurrentUser', user.user);
-          this.$store.dispatch('fetchUserProfile');
-          this.performingRequest = false;
-          this.$router.push('/dashboard');
-        })
-        .catch(err => {
-          console.log(err);
-          this.performingRequest = false;
-          this.errorMsg = err.message;
-        });
+      this.$store.dispatch('loginWithEmail', {
+        email: this.loginForm.email,
+        password: this.loginForm.password,
+      })
+      .then(() => {
+        this.performingRequest = false;
+        this.$router.push('/dashboard')
+      })
+      .catch(error => console.error(error));
     },
   },
 };

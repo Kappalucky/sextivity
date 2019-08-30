@@ -55,7 +55,7 @@
                 />
               </p>
             </div>
-            <!--<div class="field">
+            <div class="field">
               <p class="control">
                 <label for="password2">Confirm Password</label>
                 <input
@@ -66,7 +66,7 @@
                   v-model.trim="signupForm.confirmedPassword"
                 />
               </p>
-            </div>-->
+            </div>
             <div class="field">
               <p class="control join-button">
                 <button class="button is-success" @click.enter="signup">Join</button>
@@ -82,6 +82,7 @@
   </section>
 </template>
 <script>
+import { mapState } from 'vuex';
 const fb = require('../firebaseConfig.js');
 
 export default {
@@ -93,50 +94,35 @@ export default {
         lastName: '',
         email: '',
         password: '',
-        //confirmedPassword: '',
+        confirmedPassword: '',
       },
       performingRequest: false,
       errorMsg: '',
     };
   },
+  computed: {
+    ...mapState(['authError', 'authStatus'])
+  },
   methods: {
     toggleForm() {
       this.errorMsg = '';
     },
+    passwordMatch(password, confirmation) {
+      return password === confirmation ? true : false;
+    },
     signup() {
       this.performingRequest = true;
 
-      fb.auth
-        .createUserWithEmailAndPassword(
-          this.signupForm.email,
-          this.signupForm.password,
-        )
-        .then(user => {
-          this.$store.commit('setCurrentUser', user.user);
-
-          // Create user obj
-          fb.usersCollection
-            .doc(user.user.uid)
-            .set({
-              firstName: this.signupForm.firstName,
-              lastName: this.signupForm.lastName,
-            })
-            .then(() => {
-              this.$store.dispatch('fetchUserProfile');
-              this.performingRequest = false;
-              this.$router.push('/dashboard');
-            })
-            .catch(err => {
-              console.log(err);
-              this.performingRequest = false;
-              this.errorMsg = err.message;
-            });
-        })
-        .catch(err => {
-          console.log(err);
+      if (passwordMatch(this.signupForm.password, this.signupForm.confirmedPassword) == true) {
+        this.$store.dispatch('register', this.signupForm)
+        .then(() => {
           this.performingRequest = false;
-          this.errorMsg = err.message;
-        });
+          this.$router.push('/dashboard');
+        })
+        .catch(error => console.error(error));
+      } else {
+        console.error('Password do not match');
+      }
     },
   },
 };
