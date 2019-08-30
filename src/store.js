@@ -10,7 +10,7 @@ const store = new Vuex.Store({
     currentUser: null,
     userProfile: {}, // User details
     partners: [], // Array of Partners User had sex with
-    partnerId: '', // Temporary location for deleting instances
+    partnerId: null, // Temporary location for deleting instances
     sex: [], // Array of Days User had sex
   },
   mutations: {

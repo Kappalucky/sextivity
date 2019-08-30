@@ -188,16 +188,16 @@ export default {
       // Search partners collection using timestamp to obtain uid, save to data()
       fb.partnersCollection.where('createdOn', '==', created).get().then((docs) => {
         docs.forEach((doc) => {
-          this.$store.commit('setPartnerId', doc.id);
+          this.$store.commit("setPartnerId" ,doc.id);
         });
       });
 
-      console.log(this.$state.partnerId);
-
+      console.log(this.$store.state.partnerId);
       // Using saved uid, delete specific partners information
-      fb.partnersCollection.doc(this.$state.partnerId).delete()
+      fb.partnersCollection.doc(this.$store.state.partnerId).delete()
       .then(() => {
         this.partner = {};
+        console.log("document deleted");
       }).catch((error) => {
         console.error("Error removing document: ", error);
       });
