@@ -7,11 +7,11 @@
       <section class="modal-card-body">
 
         <b-field label="Name/Nickname">
-          <b-input type="text" v-model.trim="childPartner.name" placeholder="Guy from Tinder" required></b-input>
+          <b-input type="text" v-model.trim="partner.name" placeholder="Guy from Tinder" required></b-input>
         </b-field>
 
         <b-field label="Gender">
-            <b-select class="gender-select" placeholder="Gender" v-model="childPartner.gender">
+            <b-select class="gender-select" placeholder="Gender" v-model="partner.gender">
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Transgender">Transgender</option>
@@ -19,13 +19,13 @@
         </b-field>
 
         <b-field label="Description">
-            <b-input placeholder="Brown eyes, plump sexy lips, freckles..." maxlength="200" type="textarea" v-model="childPartner.description"></b-input>
+            <b-input placeholder="Brown eyes, plump sexy lips, freckles..." maxlength="200" type="textarea" v-model="partner.description"></b-input>
         </b-field>
 
         <b-field label="Location Met">
           <b-input
             type="text"
-            v-model.trim="childPartner.location"
+            v-model.trim="partner.location"
             placeholder="London, England"
             required
           ></b-input>
@@ -35,7 +35,7 @@
         <b-datepicker
             type="month"
             placeholder="Click to select..."
-            v-model="childPartner.approxDateMet"
+            v-model="partner.approxDateMet"
             icon="calendar-today">
         </b-datepicker>
         </b-field>
@@ -48,6 +48,7 @@
         </b-modal>
 </template>
 <script>
+import moment from 'moment';
 const fb = require('../firebaseConfig.js');
 
 export default {
@@ -63,20 +64,20 @@ export default {
     };
   },
   props: {
-      parentPartner: {
+      partner: {
         type: Object,
       },
   },
   methods: {
       updatePartner() {
         // Using saved uid, update specific partners information
-      fb.partnersCollection.doc(this.childPartner.id).update({
+      fb.partnersCollection.doc(this.partner.id).update({
         updatedOn: new Date(),
-        name: this.childPartner.name,
-        gender: this.childPartner.gender,
-        location: this.childPartner.location,
-        approxDateMet: this.childPartner.approxDateMet,
-        description: this.childPartner.description,
+        name: this.partner.name,
+        gender: this.partner.gender,
+        location: this.partner.location,
+        approxDateMet: this.partner.approxDateMet,
+        description: this.partner.description,
       }).then(() => {
         this.$parent.closeEdit();
       }).catch((error) => {
@@ -84,12 +85,6 @@ export default {
       });
       },
   },
-  beforeMount() {
-    this.childPartner = this.parentPartner;
-  },
-  destroy() {
-    this.childPartner = {};
-  }
 };
 </script>
 <style scoped>

@@ -10,6 +10,7 @@ const store = new Vuex.Store({
     currentUser: null,
     userProfile: {}, // User details
     partners: [], // Array of Partners User had sex with
+    partnerId: '', // Temporary location for deleting instances
     sex: [], // Array of Days User had sex
   },
   mutations: {
@@ -26,6 +27,9 @@ const store = new Vuex.Store({
         state.partners = [];
       }
     },
+    setPartnerId(state, val) {
+      state.partnerId = val;
+    },
     setSex(state, val) {
       if (val) {
         state.sex = val;
@@ -35,18 +39,13 @@ const store = new Vuex.Store({
     },
   },
   actions: {
-    clearData({
-      commit
-    }) {
+    clearData({ commit }) {
       commit('setCurrentUser', null);
       commit('setUserProfile', {});
       commit('setPartners', []);
       commit('setSex', []);
     },
-    fetchUserProfile({
-      commit,
-      state
-    }) {
+    fetchUserProfile({ commit, state }) {
       fb.usersCollection
         .doc(state.currentUser.uid)
         .get()
@@ -57,10 +56,7 @@ const store = new Vuex.Store({
           console.log(err);
         });
     },
-    fetchPartners({
-      commit,
-      state
-    }) {
+    fetchPartners({ commit, state }) {
       fb.partnersCollection
         .where('userId', '==', state.currentUser.uid)
         .get()
@@ -81,9 +77,7 @@ const store = new Vuex.Store({
           console.log(err);
         });
     },
-    logout({
-      commit
-    }) {
+    logout({ commit }) {
       commit('clearData');
     },
   },

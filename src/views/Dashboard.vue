@@ -61,7 +61,8 @@
             sortable
           >{{ props.row.name }}</b-table-column>
 
-          <b-table-column label="Gender">
+          <b-table-column label="Gender"
+          centered>
             <span>
               <b-icon pack="fas" :icon="partners.gender === 'Male' ? 'fa-mars' : 'fa-venus'"></b-icon>
               {{ props.row.gender }}
@@ -72,11 +73,12 @@
             field="user.last_name"
             label="Location"
             sortable
+            centered
           >{{ props.row.location }}</b-table-column>
 
-          <!--<b-table-column field="seconds" label="Date Met" sortable centered>
-            <span class="tag is-success">{{ new Date(props.row.approxDateMet.seconds).toLocaleDateString() }}</span>
-          </b-table-column>-->
+          <b-table-column field="seconds" label="Date Met" sortable centered>
+            <span class="tag is-success">{{ formatDate(props.row.approxDateMet.seconds) }}</span>
+          </b-table-column>
 
           <b-table-column centered>
             <span class="partners-table-buttons">
@@ -90,14 +92,14 @@
     <!-- End Partners Datatable -->
 
     <!-- Add Partner Modal -->
-    <section class="modal">
+    <section class="partner-modal-add">
       <add-partner-modal />
     </section>
     <!-- End Partner Modal -->
 
     <!-- Edit Partner Modal -->
-    <section class="modal">
-      <edit-partner-modal :parentPartner = "partner" />
+    <section class="partner-modal-edit">
+      <edit-partner-modal :partner = "partner" />
     </section>
     <!-- End Edit Partner Modal -->
 
@@ -110,6 +112,7 @@
   </div>
 </template>
 <script>
+import moment from 'moment';
 import AddPartnerModal from '@/components/AddPartnerModal.vue';
 import EditPartnerModal from '@/components/EditPartnerModal.vue';
 
@@ -163,17 +166,46 @@ export default {
       // Search partners collection using timestamp to obtain uid, save to data()
       fb.partnersCollection.where('createdOn', '==', created).get().then((docs) => {
         docs.forEach((doc) => {
-          console.log(doc);
           this.partner.id = doc.id;
         });
       });
 
-      const object = this.$store.state.partners[id];
-      this.partner = Object.assign({}, object);
+      // Assign entire partner instance to data()
+      const partnerObject = this.$store.state.partners[id];
+      this.partner = Object.assign({}, partnerObject);
+
+      // Convert partner instance UNIX timestamp to Date
+      let partnerDate = moment.unix(this.partner.approxDateMet.seconds);
+      this.partner.approxDateMet = moment(partnerDate).toDate();
+
+      // Open Modal
       this.editPartnerModal = true;
     },
     partnerDelete(id) {
+      // Search partner array by id number which is the index number
+      let created = this.$store.state.partners[id].createdOn;
+
+      // Search partners collection using timestamp to obtain uid, save to data()
+      fb.partnersCollection.where('createdOn', '==', created).get().then((docs) => {
+        docs.forEach((doc) => {
+          this.$store.commit('setPartnerId', doc.id);
+        });
+      });
+
+      console.log(this.$state.partnerId);
+
+      // Using saved uid, delete specific partners information
+      fb.partnersCollection.doc(this.$state.partnerId).delete()
+      .then(() => {
+        this.partner = {};
+      }).catch((error) => {
+        console.error("Error removing document: ", error);
+      });
     },
+    formatDate(date) {
+      let unix = moment.unix(date);
+      return moment(unix).format("MMM YYYY");
+    }
   },
 };
 </script>
@@ -206,5 +238,10 @@ export default {
 }
 .add-button {
   margin-left: auto;
+}
+.tag.is-success {
+  padding-left: 5px;
+  padding-right: 5px;
+  width: 100%;
 }
 </style>

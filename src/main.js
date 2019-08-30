@@ -1,13 +1,14 @@
 import Vue from 'vue';
 import Buefy from 'buefy';
 import 'buefy/dist/buefy.css';
+import moment from 'moment';
 import App from './App.vue';
 import router from './router';
 import store from './store';
 
 const firebase = require('./firebaseConfig.js');
 
-Vue.use(Buefy);
+Vue.use(Buefy, moment);
 
 Vue.config.productionTip = false;
 

@@ -1,5 +1,5 @@
 <template>
-    <b-modal :active.sync="$parent.isModalActive" has-modal-card>
+  <b-modal :active.sync="$parent.isModalActive" has-modal-card>
     <div class="modal-card container">
       <header class="modal-card-head">
         <p class="modal-card-title">Add Partner</p>
@@ -45,12 +45,9 @@
             <template>
               <button class="button is-primary" @click="createPartner()">Add</button>
             </template>
-            <!--<template v-else>
-              <button class="button is-primary" @click="editPartner()">Edit</button>
-            </template>-->
       </footer>
     </div>
-        </b-modal>
+  </b-modal>
 </template>
 <script>
 const fb = require('../firebaseConfig.js');
@@ -68,31 +65,28 @@ export default {
   methods: {
       createPartner() {
         fb.partnersCollection.add({
-            createdOn: new Date(),
-            userId: this.$store.state.currentUser.uid,
-            name: this.name,
-            gender: this.gender,
-            location: this.location,
-            approxDateMet: this.approxDateMet,
-            description: this.description,
+          createdOn: new Date(),
+          userId: this.$store.state.currentUser.uid,
+          name: this.name,
+          gender: this.gender,
+          location: this.location,
+          approxDateMet: this.approxDateMet,
+          description: this.description,
         }).then((ref) => {
-            this.$parent.close();
+          this.$parent.close();
         }).catch((error) => {
-            console.log(error);
+          console.log(error);
         });
-      },
-      editPartner() {
-
       },
   },
 };
 </script>
 <style scoped>
 .gender-select {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 .footer-buttons {
-    justify-content: center;
+  justify-content: center;
 }
 </style>
