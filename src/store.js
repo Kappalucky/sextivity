@@ -240,5 +240,7 @@ fb.auth.onAuthStateChanged(user => {
     fb.usersCollection.doc(user.uid).onSnapshot(doc => {
       store.commit('SET_USER_PROFILE', doc.data());
     });
+
+    // !TO-DO: Need to add separate array to handle collection updates
   }
 });
