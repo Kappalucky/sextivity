@@ -113,7 +113,7 @@ const store = new Vuex.Store({
         commit('SET_ERROR', error);
       });
     },
-    getUserProfile({ commit, state }) {
+    getUserProfile({ state, commit }) {
       fb.usersCollection
         .doc(state.currentUser.uid)
         .get()
@@ -124,7 +124,7 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    getPartners({ commit, state }) {
+    getPartners({ state, commit }) {
       fb.partnersCollection
         .where('userId', '==', state.currentUser.uid)
         .get()
@@ -145,18 +145,19 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    getPartner({ commit }, { id }) {
-      const partner = this.partners[id];
+    getPartner({ state, commit }, id) {
+      const partner = state.partners[id];
 
       // Convert partner instance UNIX timestamp to Date
+      // !TO-DO: Fix 'invalid date' error in dashboard date section
       const partnerDate = moment.unix(partner.approxDateMet.seconds);
       partner.approxDateMet = moment(partnerDate).toDate();
 
       commit('SET_PARTNER', partner);
     },
-    getSex({ commit }) {
+    getSex({ state, commit }) {
       fb.sexCollection
-        .doc(this.currentUser.uid)
+        .doc(state.currentUser.uid)
         .get()
         .then(querySnapshot => {
           const sexArray = [];
@@ -175,8 +176,8 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    getPartnerId({ commit }, { id }) {
-      const created = this.partners[id].createdOn;
+    getPartnerId({ state, commit }, id) {
+      const created = state.partners[id].createdOn;
 
       fb.partnersCollection
         .where('createdOn', '==', created)
@@ -201,11 +202,11 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    newPartner({ dispatch, commit }, params) {
+    newPartner({ state, dispatch, commit }, params) {
       fb.partnersCollection
         .add({
           createdOn: new Date(),
-          userId: this.currentUser.uid,
+          userId: state.currentUser.uid,
           name: params.name,
           gender: params.gender,
           location: params.location,
@@ -219,15 +220,15 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    newSex({ dispatch, commit }, id, params) {
+    newSex({ state, dispatch, commit }, id, params) {
       // !TO-DO: Test within calendar if partner id can be added to params
       dispatch('getPartnerId', id);
 
       fb.sexCollection
         .add({
           createdOn: new Date(),
-          userId: this.currentUser.uid,
-          partnerId: this.partnerId,
+          userId: state.currentUser.uid,
+          partnerId: state.partnerId,
           rating: params.rating,
           type: params.type,
           date: params.date,
@@ -240,11 +241,11 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    newFeedback(params) {
+    newFeedback({ state }, params) {
       fb.feedbackCollection
         .add({
           createdOn: new Date(),
-          userId: this.currentUser.uid,
+          userId: state.currentUser.uid,
           subject: params.subject,
           message: params.message,
         })
@@ -252,9 +253,9 @@ const store = new Vuex.Store({
           this.commit('SET_ERROR', error);
         });
     },
-    updatePartner({ dispatch, commit }, params) {
+    updatePartner({ state, dispatch, commit }, params) {
       fb.partnersCollection
-        .doc(this.partnerId)
+        .doc(state.partnerId)
         .update({
           updatedOn: new Date(),
           name: params.name,
@@ -264,15 +265,16 @@ const store = new Vuex.Store({
           description: params.description,
         })
         .then(() => {
+          commit('SET_PARTNER', {});
           dispatch('getPartners');
         })
         .catch(error => {
           commit('SET_ERROR', error);
         });
     },
-    deletePartner({ commit }, { id }) {
+    deletePartner({ state, commit }, id) {
       fb.partnersCollection
-        .doc(this.partnerId)
+        .doc(state.partnerId)
         .delete()
         .then(() => {
           commit('DELETE_PARTNER', id);

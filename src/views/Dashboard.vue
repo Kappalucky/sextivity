@@ -99,7 +99,7 @@
 
     <!-- Edit Partner Modal -->
     <section class="partner-modal-edit">
-      <edit-partner-modal :partner = "partner" />
+      <edit-partner-modal />
     </section>
     <!-- End Edit Partner Modal -->
 
@@ -112,7 +112,7 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import moment from 'moment';
 import AddPartnerModal from '@/components/AddPartnerModal.vue';
 import EditPartnerModal from '@/components/EditPartnerModal.vue';
@@ -136,20 +136,13 @@ export default {
       perPage: 5,
       isModalActive: false,
       editPartnerModal: false,
-      partner: {
-        id: '',
-        name: '',
-        gender: '',
-        location: '',
-        approxDateMet: new Date(),
-        description: '',
-      },
     };
   },
   computed: {
     ...mapState(['partners'])
   },
   methods: {
+    ...mapActions(['getPartnerId', 'getPartner', 'deletePartner']),
     close() {
       this.isModalActive = !this.isModalActive;
     },
@@ -158,18 +151,16 @@ export default {
     },
     partnerEdit(id) {
       // Sets uid of Partner instance
-      this.$store.dispatch('getPartnerId', id);
+      this.getPartnerId(id);
       // Sets partner object in store
-      this.$store.dispatch('getPartner', id);
-      // Copies store data to component - Temporary
-      this.partner = this.$store.state.partner;
+      this.getPartner(id);
       // Open Modal
       this.editPartnerModal = true;
     },
     partnerDelete(id) {
       // Sets uid of Partner instance
-      this.$store.dispatch('getPartnerId', id);
-      this.$store.dispatch('deletePartner', id)
+      this.getPartnerId(id);
+      this.deletePartner(id)
       .then(() => {
         this.$buefy.snackbar.open({
           message: 'Partner deleted',

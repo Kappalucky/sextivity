@@ -42,12 +42,13 @@
       </section>
       <footer class="modal-card-foot footer-buttons">
             <button class="button" type="button" v-on:click="$parent.closeEdit()">Close</button>
-            <button class="button is-primary" @click="updatePartner()">Edit</button>
+            <button class="button is-primary" @click="update()">Edit</button>
       </footer>
     </div>
         </b-modal>
 </template>
 <script>
+import { mapState, mapActions } from 'vuex';
 import moment from 'moment';
 
 export default {
@@ -62,14 +63,13 @@ export default {
       },
     };
   },
-  props: {
-    partner: {
-      type: Object,
-    },
+  computed: {
+    ...mapState(['partner'])
   },
   methods: {
-    updatePartner() {
-      this.$store.dispatch('updatePartner', this.partner)
+    ...mapActions(['updatePartner']),
+    update() {
+      this.updatePartner(this.partner)
       .then(() => this.$parent.closeEdit())
       .catch(error => console.error(error));
     },

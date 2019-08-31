@@ -41,7 +41,7 @@
         </b-field>
       </section>
       <footer class="modal-card-foot footer-buttons">
-            <button class="button" type="button" v-on:click="$parent.close()">Close</button>
+            <button class="button" type="button" v-on:click="close()">Close</button>
             <template>
               <button class="button is-primary" @click="createPartner()">Add</button>
             </template>
@@ -50,12 +50,19 @@
   </b-modal>
 </template>
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   data() {
     return {
       partner: {
+        name: '',
+        gender: '',
+        location: '',
+        approxDateMet: new Date(),
+        description: '',
+      },
+      default: {
         name: '',
         gender: '',
         location: '',
@@ -68,11 +75,19 @@ export default {
     ...mapState(['currentUser'])
   },
   methods: {
-      createPartner() {
-        this.$store.dispatch('newPartner', this.partner)
-        .then(() => this.$parent.close())
-        .catch(error => console.error(error));
-      },
+    ...mapActions(['newPartner']),
+    createPartner() {
+      this.newPartner(this.partner)
+      .then(() => {
+        this.$parent.close();
+        this.partner = Object.assign({}, this.default);
+        })
+      .catch(error => console.error(error));
+    },
+    close() {
+      this.partner = Object.assign({}, this.default);
+      this.$parent.close();
+    },
   },
 };
 </script>
