@@ -1,6 +1,6 @@
 <template>
-  <section class="login">
-    <div class="container">
+  <section class="login section-spacing">
+    <div class="container container-half">
       <div class="card">
         <header class="card-header">
           <p class="card-header-title">Login</p>
@@ -32,7 +32,7 @@
               </p>
             </div>
             <div class="field">
-              <p class="control login-button">
+              <p class="control footer-buttons-flex">
                 <button class="button is-success" @click="login()">Login</button>
               </p>
             </div>
@@ -48,7 +48,6 @@
 </template>
 <script>
 import { mapState } from 'vuex';
-const fb = require('../firebaseConfig.js');
 
 export default {
   name: 'Login',
@@ -87,18 +86,4 @@ export default {
 </script>
 
 <style scoped>
-.login {
-  margin: 1rem;
-  padding: 1rem;
-}
-.card-header-title {
-  justify-content: center;
-}
-.login-button {
-  display: flex;
-  justify-content: center;
-}
-.container {
-  width: 50%;
-}
 </style>

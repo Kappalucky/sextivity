@@ -108,6 +108,11 @@ const store = new Vuex.Store({
           commit('AUTH_ERROR', error);
         });
     },
+    resetPassword({ commit }, { email }) {
+      fb.auth.sendPasswordResetEmail(email).catch(error => {
+        commit('SET_ERROR', error);
+      });
+    },
     getUserProfile({ commit, state }) {
       fb.usersCollection
         .doc(state.currentUser.uid)
@@ -149,6 +154,39 @@ const store = new Vuex.Store({
 
       commit('SET_PARTNER', partner);
     },
+    getSex({ commit }) {
+      fb.sexCollection
+        .doc(this.currentUser.uid)
+        .get()
+        .then(querySnapshot => {
+          const sexArray = [];
+          let index = 0;
+
+          querySnapshot.forEach(doc => {
+            const sex = doc.data();
+            sex.id = index;
+            sexArray.push(sex);
+            index += 1;
+          });
+
+          commit('SET_SEX', sexArray);
+        })
+        .catch(error => {
+          commit('SET_ERROR', error);
+        });
+    },
+    getPartnerId({ commit }, { id }) {
+      const created = this.partners[id].createdOn;
+
+      fb.partnersCollection
+        .where('createdOn', '==', created)
+        .get()
+        .then(docs => {
+          docs.forEach(doc => {
+            commit('SET_PARTNER_ID', doc.id);
+          });
+        });
+    },
     newUser({ dispatch, commit }, uid, params) {
       fb.usersCollection
         .doc(uid)
@@ -179,6 +217,39 @@ const store = new Vuex.Store({
         })
         .catch(error => {
           commit('SET_ERROR', error);
+        });
+    },
+    newSex({ dispatch, commit }, id, params) {
+      // !TO-DO: Test within calendar if partner id can be added to params
+      dispatch('getPartnerId', id);
+
+      fb.sexCollection
+        .add({
+          createdOn: new Date(),
+          userId: this.currentUser.uid,
+          partnerId: this.partnerId,
+          rating: params.rating,
+          type: params.type,
+          date: params.date,
+          protection: params.protection,
+        })
+        .then(() => {
+          dispatch('getSex');
+        })
+        .catch(error => {
+          commit('SET_ERROR', error);
+        });
+    },
+    newFeedback(params) {
+      fb.feedbackCollection
+        .add({
+          createdOn: new Date(),
+          userId: this.currentUser.uid,
+          subject: params.subject,
+          message: params.message,
+        })
+        .catch(error => {
+          this.commit('SET_ERROR', error);
         });
     },
     updatePartner({ dispatch, commit }, params) {

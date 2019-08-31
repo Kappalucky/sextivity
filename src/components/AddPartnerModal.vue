@@ -11,7 +11,7 @@
         </b-field>
 
         <b-field label="Gender">
-            <b-select class="gender-select" placeholder="Gender" v-model="partner.gender">
+            <b-select class="select-center" placeholder="Gender" v-model="partner.gender">
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Transgender">Transgender</option>
@@ -51,7 +51,6 @@
 </template>
 <script>
 import { mapState } from 'vuex';
-const fb = require('../firebaseConfig.js');
 
 export default {
   data() {
@@ -71,18 +70,11 @@ export default {
   methods: {
       createPartner() {
         this.$store.dispatch('newPartner', this.partner)
-        .then(() => this.$parent.close();)
+        .then(() => this.$parent.close())
         .catch(error => console.error(error));
       },
   },
 };
 </script>
 <style scoped>
-.gender-select {
-  display: flex;
-  justify-content: center;
-}
-.footer-buttons {
-  justify-content: center;
-}
 </style>

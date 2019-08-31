@@ -40,4 +40,25 @@ export default {
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+.footer-buttons {
+  justify-content: center;
+}
+.footer-buttons-flex {
+  display: flex;
+  justify-content: center;
+}
+.select-center {
+  display: flex;
+  justify-content: center;
+}
+.container-half {
+  width: 50%;
+}
+.card-header-title {
+  justify-content: center;
+}
+.section-spacing {
+  margin: 1rem;
+  padding: 1rem;
+}
 </style>

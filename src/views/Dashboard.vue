@@ -104,10 +104,10 @@
     <!-- End Edit Partner Modal -->
 
     <!-- Calendar Component -->
-    <section class="calendar">
+    <!--<section class="calendar">
       <vue-calendar :show-limit="3" @day-clicked="dayClicked" @event-clicked="eventClicked">
       </vue-calendar>
-    </section>
+    </section>-->
     <!-- End Calendar Component -->
   </div>
 </template>
@@ -116,8 +116,6 @@ import { mapState } from 'vuex';
 import moment from 'moment';
 import AddPartnerModal from '@/components/AddPartnerModal.vue';
 import EditPartnerModal from '@/components/EditPartnerModal.vue';
-
-const fb = require('../firebaseConfig.js');
 
 export default {
   name: 'Dashboard',
@@ -159,34 +157,18 @@ export default {
       this.editPartnerModal = !this.editPartnerModal;
     },
     partnerEdit(id) {
-      // Search partner array by id number which is the index number
-      let created = this.$store.state.partners[id].createdOn;
-
-      // Search partners collection using timestamp to obtain uid, save to data()
-      fb.partnersCollection.where('createdOn', '==', created).get().then((docs) => {
-        docs.forEach((doc) => {
-          this.$store.commit('SET_PARTNER_ID', doc.id);
-        });
-      });
-
+      // Sets uid of Partner instance
+      this.$store.dispatch('getPartnerId', id);
+      // Sets partner object in store
       this.$store.dispatch('getPartner', id);
-
+      // Copies store data to component - Temporary
       this.partner = this.$store.state.partner;
-
       // Open Modal
       this.editPartnerModal = true;
     },
     partnerDelete(id) {
-      // Search partner array by id number which is the index number
-      let created = this.$store.state.partners[id].createdOn;
-
-      // Search partners collection using timestamp to obtain uid, save to $store
-      fb.partnersCollection.where('createdOn', '==', created).get().then((docs) => {
-        docs.forEach((doc) => {
-          this.$store.commit('SET_PARTNER_ID', doc.id);
-        });
-      });
-
+      // Sets uid of Partner instance
+      this.$store.dispatch('getPartnerId', id);
       this.$store.dispatch('deletePartner', id)
       .then(() => {
         this.$buefy.snackbar.open({
@@ -198,18 +180,17 @@ export default {
         })
       })
       .catch(error => console.error(error));
-
     },
     formatDate(date) {
       let unix = moment.unix(date);
       return moment(unix).format("MMM YYYY");
     },
-    dayClicked(day) {
+    /*dayClicked(day) {
       console.log(day);
     },
     eventClicked(event) {
       console.log(event);
-    },
+    },*/
   },
   created() {
     //this.$calendar.eventBus.$on('day-clicked', day => dayClicked(day));

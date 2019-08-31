@@ -1,6 +1,6 @@
 <template>
-  <section class="join">
-    <div class="container">
+  <section class="join section-spacing">
+    <div class="container container-half">
       <div class="card">
         <header class="card-header">
           <p class="card-header-title">Join</p>
@@ -68,7 +68,7 @@
               </p>
             </div>
             <div class="field">
-              <p class="control join-button">
+              <p class="control footer-buttons-flex">
                 <button class="button is-success" @click.enter="signup">Join</button>
               </p>
             </div>
@@ -83,7 +83,6 @@
 </template>
 <script>
 import { mapState } from 'vuex';
-const fb = require('../firebaseConfig.js');
 
 export default {
   name: 'Join',
@@ -129,18 +128,4 @@ export default {
 </script>
 
 <style scoped>
-.join {
-  margin: 1rem;
-  padding: 1rem;
-}
-.card-header-title {
-  justify-content: center;
-}
-.join-button {
-  display: flex;
-  justify-content: center;
-}
-.container {
-  width: 50%;
-}
 </style>
