@@ -28,6 +28,7 @@
     <section class="partners">
       <h1>List of Partners</h1>
       <b-field grouped group-multiline>
+        <!-- TO-DO: Need to make selection options dynamic based on partner array length -->
         <b-select v-model="perPage">
           <option value="5">5 per page</option>
           <option value="10">10 per page</option>
