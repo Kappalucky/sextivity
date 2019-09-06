@@ -192,9 +192,12 @@ const store = new Vuex.Store({
     },
     getIndividualSex({ state, commit }, id) {
       const sex = state.sex[id];
+
       // Convert partner instance UNIX timestamp to Date
       // !TO-DO: Fix 'invalid date' error in dashboard date section
-      const sexDate = moment.unix(sex.date.seconds);
+      // const sexDate = moment.unix(sex.date.seconds);
+      // sex.date = moment(sexDate).toDate();
+
       commit('SET_INDIVIDUAL_SEX', sex);
     },
     getPartnerId({ state, commit }, id) {
@@ -208,6 +211,12 @@ const store = new Vuex.Store({
             commit('SET_PARTNER_ID', doc.id);
           });
         });
+    },
+    getAverage({ state, dispatch }, uid) {
+      const partner = state.sex.filter(sex => sex.partnerId === uid);
+      const average =
+        partner.reduce((acc, sex) => acc + sex.rating, 0) / partner.length;
+      dispatch('updateRating', uid, average);
     },
     newUser({ dispatch, commit }, uid, params) {
       fb.usersCollection
@@ -257,6 +266,7 @@ const store = new Vuex.Store({
         })
         .then(() => {
           dispatch('getSex');
+          dispatch('getAverage', state.partnerId);
         })
         .catch(error => {
           commit('SET_ERROR', error);
@@ -305,13 +315,26 @@ const store = new Vuex.Store({
         .then(() => {
           commit('SET_INDIVIDUAL_SEX', {});
           dispatch('getSex');
-          dispatch('updateRating', params.partnerId);
+          dispatch('getAverage', params.partnerId);
         })
         .catch(error => {
           commit('SET_ERROR', error);
         });
     },
-    updateRating({ state }, id) {},
+    updateRating({ dispatch }, uid, rating) {
+      fb.partnersCollection
+        .doc(uid)
+        .update({
+          updatedOn: new Date(),
+          rating,
+        })
+        .then(() => {
+          dispatch('getPartners');
+        })
+        .catch(error => {
+          this.commit('SET_ERROR', error);
+        });
+    },
     deletePartner({ state, commit }, id) {
       fb.partnersCollection
         .doc(state.partnerId)
