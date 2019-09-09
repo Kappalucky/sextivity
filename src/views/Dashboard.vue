@@ -5,28 +5,28 @@
       <hr />
     </section>
     <section class="container is-widescreen dashboard-body">
-
       <!-- Section cards -->
-      <section class="overview">
-          <div class="columns is-mobile">
-            <div class="column">
-              <div class="card">
-                <span class="overview-number">{{partners.length}}</span>
-                <p class="overview-text">Partners</p>
-              </div>
-            </div>
-            <div class="column">
-              <div class="card">
-                <span class="overview-number">{{sexAmount}}</span>
-                <p class="overview-text">times had sex</p>
-              </div>
+      <section class="section overview">
+        <div class="columns is-mobile">
+          <div class="column">
+            <div class="card">
+              <span class="overview-number">{{partners.length}}</span>
+              <p class="overview-text">Partners</p>
             </div>
           </div>
+          <div class="column">
+            <div class="card">
+              <span class="overview-number">{{sexAmount}}</span>
+              <p class="overview-text">times had sex</p>
+            </div>
+          </div>
+        </div>
       </section>
+      <br />
       <!-- End Section Cards -->
 
       <!-- Partners Datatable -->
-      <section class="partners">
+      <section class="section partners">
         <h1>List of Partners</h1>
         <b-field grouped group-multiline>
           <!-- TO-DO: Need to make selection options dynamic based on partner array length -->
@@ -63,8 +63,7 @@
               sortable
             >{{ props.row.name }}</b-table-column>
 
-            <b-table-column label="Gender"
-            centered>
+            <b-table-column label="Gender" centered>
               <span>
                 <b-icon pack="fas" :icon="partners.gender === 'Male' ? 'fa-mars' : 'fa-venus'"></b-icon>
                 {{ props.row.gender }}
@@ -97,7 +96,7 @@
       <section class="partner-modal-add">
         <add-partner-modal />
       </section>
-      <!-- End Partner Modal -->
+      <!-- End Add Partner Modal -->
 
       <!-- Edit Partner Modal -->
       <section class="partner-modal-edit">
@@ -106,11 +105,8 @@
       <!-- End Edit Partner Modal -->
 
       <!-- Calendar Component -->
-      <section class="calendar">
-          <vue-calendar :show-limit="3" @day-clicked="dayClicked" @event-clicked="eventClicked">
-          </vue-calendar>
-      </section>
-      <br>
+      <calendar />
+      <br />
       <!-- End Calendar Component -->
     </section>
   </div>
@@ -120,113 +116,104 @@ import { mapState, mapActions } from 'vuex';
 import moment from 'moment';
 import AddPartnerModal from '@/components/AddPartnerModal.vue';
 import EditPartnerModal from '@/components/EditPartnerModal.vue';
+import Calendar from '@/views/Calendar.vue';
 
 export default {
-  name: 'Dashboard',
-  components: {
-    AddPartnerModal,
-    EditPartnerModal,
-  },
-  data() {
-    return {
-      sexAmount: 17,
-      isPaginated: true,
-      isPaginationSimple: false,
-      paginationPosition: 'bottom',
-      defaultSortDirection: 'asc',
-      sortIcon: 'arrow-up',
-      sortIconSize: 'is-small',
-      currentPage: 1,
-      perPage: 5,
-      isModalActive: false,
-      editPartnerModal: false,
-    };
-  },
-  computed: {
-    ...mapState(['partners'])
-  },
-  methods: {
-    ...mapActions(['getPartnerId', 'getPartner', 'deletePartner']),
-    close() {
-      this.isModalActive = !this.isModalActive;
-    },
-    closeEdit() {
-      this.editPartnerModal = !this.editPartnerModal;
-    },
-    partnerEdit(id) {
-      // Sets uid of Partner instance
-      this.getPartnerId(id);
-      // Sets partner object in store
-      this.getPartner(id);
-      // Open Modal
-      this.editPartnerModal = true;
-    },
-    partnerDelete(id) {
-      // Sets uid of Partner instance
-      this.getPartnerId(id);
-      this.deletePartner(id)
-      .then(() => {
-        this.$buefy.snackbar.open({
-          message: 'Partner deleted',
-          type: 'is-success',
-          position: 'is-top',
-          actionText: null,
-          indefinite: false,
-        })
-      })
-      .catch(error => console.error(error));
-    },
-    formatDate(date) {
-      let unix = moment.unix(date);
-      return moment(unix).format("MMM YYYY");
-    },
-    dayClicked(day) {
-      console.log(day);
-      // day.date == date to log for sex object
-    },
-    eventClicked(event) {
-      console.log(event);
-    },
-  },
-  created() {
-    this.$calendar.eventBus.$on('day-clicked', day => dayClicked(day));
-    this.$calendar.eventBus.$on('event-clicked', event => eventClicked(event));
-  }
+	name: 'Dashboard',
+	components: {
+		AddPartnerModal,
+		EditPartnerModal,
+		Calendar,
+	},
+	data() {
+		return {
+			sexAmount: 17,
+			isPaginated: true,
+			isPaginationSimple: false,
+			paginationPosition: 'bottom',
+			defaultSortDirection: 'asc',
+			sortIcon: 'arrow-up',
+			sortIconSize: 'is-small',
+			currentPage: 1,
+			perPage: 5,
+			isModalActive: false,
+			editPartnerModal: false,
+		};
+	},
+	computed: {
+		...mapState(['partners']),
+	},
+	methods: {
+		...mapActions(['getPartnerId', 'getPartner', 'deletePartner']),
+		close() {
+			this.isModalActive = !this.isModalActive;
+		},
+		closeEdit() {
+			this.editPartnerModal = !this.editPartnerModal;
+		},
+		partnerEdit(id) {
+			// Sets uid of Partner instance
+			this.getPartnerId(id);
+			// Sets partner object in store
+			this.getPartner(id);
+			// Open Modal
+			this.editPartnerModal = true;
+		},
+		partnerDelete(id) {
+			// Sets uid of Partner instance
+			this.getPartnerId(id);
+			this.deletePartner(id)
+				.then(() => {
+					this.$buefy.snackbar.open({
+						message: 'Partner deleted',
+						type: 'is-success',
+						position: 'is-top',
+						actionText: null,
+						indefinite: false,
+					});
+				})
+				.catch(error => console.error(error));
+		},
+		formatDate(date) {
+			let unix = moment.unix(date);
+			return moment(unix).format('MMM YYYY');
+		},
+	},
 };
 </script>
 
 <style scoped>
 .dashboard-heading {
-  font-size: 2rem;
+	font-size: 2rem;
 }
 .overview {
-  margin: 1rem;
-  padding: 1rem;
+	margin: 1rem;
+	padding: 1rem;
 }
 .overview-number {
-  font-size: 3rem;
-  font-weight: 500;
+	font-size: 3rem;
+	font-weight: 500;
 }
 .overview-text {
-  font-size: 1rem;
-  font-weight: 300;
-  font-family: sans-serif;
-  text-align: center;
-  text-transform: capitalize;
+	font-size: 1rem;
+	font-weight: 300;
+	font-family: sans-serif;
+	text-align: center;
+	text-transform: capitalize;
 }
 .partners {
-  margin: 1rem;
-  padding: 1rem;
+	margin: 1rem;
+	padding: 1rem;
 }
 .partners-table-buttons > button {
-  margin: 5px;
+	margin: 5px;
 }
 .add-button {
-  margin-left: auto;
+	margin-left: auto;
 }
 .tag.is-success {
-  padding-left: 5px;
-  padding-right: 5px;
-  width: 100%;
+	padding-left: 5px;
+	padding-right: 5px;
+	width: 100%;
 }
 </style>

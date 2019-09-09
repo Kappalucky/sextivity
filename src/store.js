@@ -19,7 +19,24 @@ const store = new Vuex.Store({
     sexId: null,
     individualSex: {}, // Single Sex instance details
     realTimePartners: [], // Array to handle incoming updates to Partner Collection
-    sex: [], // Array of Days User had sex
+    sex: [
+      {
+        start: new Date(2019, 8, 9),
+        end: null,
+        title: 'Sex',
+      },
+      {
+        start: new Date(2019, 8, 9),
+        end: null,
+        title: 'Sex',
+      },
+      {
+        start: new Date(2019, 8, 9),
+        end: null,
+        title: 'Sex',
+      },
+    ], // Array of Days User had sex
+    events: [],
     error: '',
   },
   mutations: {
@@ -65,6 +82,18 @@ const store = new Vuex.Store({
         state.sex = [];
       }
     },
+    /*SET_EVENTS(state, payload) {
+      if (payload) {
+        state.events = payload.map(obj => {
+          Object.assign({
+            start: obj.date,
+            end: null,
+          });
+        });
+      } else {
+        state.events = [];
+      }
+    }, */
     SET_INDIVIDUAL_SEX(state, payload) {
       state.individualSex = payload;
     },
@@ -142,12 +171,13 @@ const store = new Vuex.Store({
       fb.partnersCollection
         .where('userId', '==', state.currentUser.uid)
         .get()
-        .then(querySnapshot => {
+        .then(queryDocumentSnapshot => {
           const partnersArray = [];
           let index = 0;
 
-          querySnapshot.forEach(doc => {
+          queryDocumentSnapshot.forEach(doc => {
             const partner = doc.data();
+            partner.uid = doc.id;
             partner.id = index;
             partnersArray.push(partner);
             index += 1;
@@ -171,19 +201,20 @@ const store = new Vuex.Store({
     },
     getSex({ state, commit }) {
       fb.sexCollection
-        .doc(state.currentUser.uid)
+        .where('userId', '==', state.currentUser.uid)
         .get()
-        .then(querySnapshot => {
+        .then(queryDocumentSnapshot => {
           const sexArray = [];
           let index = 0;
 
-          querySnapshot.forEach(doc => {
+          queryDocumentSnapshot.forEach(doc => {
             const sex = doc.data();
+            sex.uid = doc.id;
             sex.id = index;
             sexArray.push(sex);
             index += 1;
           });
-
+          // commit('SET_EVENTS', sexArray);
           commit('SET_SEX', sexArray);
         })
         .catch(error => {
@@ -206,7 +237,7 @@ const store = new Vuex.Store({
       fb.partnersCollection
         .where('createdOn', '==', created)
         .get()
-        .then(docs => {
+        .finally(docs => {
           docs.forEach(doc => {
             commit('SET_PARTNER_ID', doc.id);
           });
@@ -250,15 +281,12 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    newSex({ state, dispatch, commit }, id, params) {
-      // !TO-DO: Test within calendar if partner id can be added to params
-      dispatch('getPartnerId', id);
-
+    newSex({ state, dispatch, commit }, params) {
       fb.sexCollection
         .add({
           createdOn: new Date(),
           userId: state.currentUser.uid,
-          partnerId: state.partnerId,
+          partnerId: state.partners[params.partner].uid,
           rating: params.rating,
           type: params.type,
           date: params.date,
@@ -266,7 +294,7 @@ const store = new Vuex.Store({
         })
         .then(() => {
           dispatch('getSex');
-          dispatch('getAverage', state.partnerId);
+          // dispatch('getAverage', state.partnerId);
         })
         .catch(error => {
           commit('SET_ERROR', error);
@@ -384,6 +412,7 @@ fb.auth.onAuthStateChanged(user => {
     store.commit('SET_CURRENT_USER', user);
     store.dispatch('getUserProfile');
     store.dispatch('getPartners');
+    store.dispatch('getSex');
 
     fb.usersCollection.doc(user.uid).onSnapshot(doc => {
       store.commit('SET_USER_PROFILE', doc.data());

@@ -4,7 +4,7 @@
     <main>
       <router-view />
     </main>
-    <App-footer />
+    <!--<App-footer />-->
   </div>
 </template>
 <script>
@@ -12,53 +12,56 @@ import AppNavbar from '@/components/AppNavbar.vue';
 import AppFooter from '@/components/AppFooter.vue';
 
 export default {
-  name: 'Sextivity',
-  components: {
-    AppNavbar,
-    AppFooter,
-  },
+	name: 'Sextivity',
+	components: {
+		AppNavbar,
+		AppFooter,
+	},
 };
 </script>
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  height: 100vh;
+	font-family: 'Avenir', Helvetica, Arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-align: center;
+	color: #2c3e50;
+	height: 100vh;
 }
 #nav {
-  padding: 30px;
+	padding: 30px;
 }
 
 #nav a {
-  font-weight: bold;
-  color: #2c3e50;
+	font-weight: bold;
+	color: #2c3e50;
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+	color: #42b983;
 }
 .footer-buttons {
-  justify-content: center;
+	justify-content: center;
 }
 .footer-buttons-flex {
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 .select-center {
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 .container-half {
-  width: 50%;
+	width: 50%;
 }
 .card-header-title {
-  justify-content: center;
+	justify-content: center;
 }
 .section-spacing {
-  margin: 1rem;
-  padding: 1rem;
+	margin: 1rem;
+	padding: 1rem;
+}
+.red {
+	color: red;
 }
 </style>
