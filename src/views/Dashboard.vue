@@ -16,7 +16,7 @@
           </div>
           <div class="column">
             <div class="card">
-              <span class="overview-number">{{sexAmount}}</span>
+              <span class="overview-number">{{sex.length}}</span>
               <p class="overview-text">times had sex</p>
             </div>
           </div>
@@ -127,7 +127,6 @@ export default {
 	},
 	data() {
 		return {
-			sexAmount: 17,
 			isPaginated: true,
 			isPaginationSimple: false,
 			paginationPosition: 'bottom',
@@ -141,7 +140,7 @@ export default {
 		};
 	},
 	computed: {
-		...mapState(['partners']),
+		...mapState(['partners', 'sex']),
 	},
 	methods: {
 		...mapActions(['getPartnerId', 'getPartner', 'deletePartner']),

@@ -19,23 +19,7 @@ const store = new Vuex.Store({
     sexId: null,
     individualSex: {}, // Single Sex instance details
     realTimePartners: [], // Array to handle incoming updates to Partner Collection
-    sex: [
-      {
-        start: new Date(2019, 8, 9),
-        end: null,
-        title: 'Sex',
-      },
-      {
-        start: new Date(2019, 8, 9),
-        end: null,
-        title: 'Sex',
-      },
-      {
-        start: new Date(2019, 8, 9),
-        end: null,
-        title: 'Sex',
-      },
-    ], // Array of Days User had sex
+    sex: [], // Array of Days User had sex
     events: [],
     error: '',
   },
@@ -82,18 +66,28 @@ const store = new Vuex.Store({
         state.sex = [];
       }
     },
-    /*SET_EVENTS(state, payload) {
-      if (payload) {
-        state.events = payload.map(obj => {
-          Object.assign({
-            start: obj.date,
-            end: null,
-          });
+    SET_EVENTS(state, payload) {
+      const events = [];
+
+      payload.forEach(obj => {
+        Object.entries(obj).forEach(entry => {
+          const key = entry[0];
+          const value = entry[1];
+
+          if (key === 'date') {
+            events.push({
+              title: 'Sex',
+              sexUid: obj.uid,
+              sexId: obj.id,
+              start: moment(value.date).format('MM-DD-YYYY'),
+              end: null,
+            });
+          }
         });
-      } else {
-        state.events = [];
-      }
-    }, */
+      });
+
+      state.events = events;
+    },
     SET_INDIVIDUAL_SEX(state, payload) {
       state.individualSex = payload;
     },
@@ -214,7 +208,7 @@ const store = new Vuex.Store({
             sexArray.push(sex);
             index += 1;
           });
-          // commit('SET_EVENTS', sexArray);
+          commit('SET_EVENTS', sexArray);
           commit('SET_SEX', sexArray);
         })
         .catch(error => {
@@ -232,6 +226,7 @@ const store = new Vuex.Store({
       commit('SET_INDIVIDUAL_SEX', sex);
     },
     getPartnerId({ state, commit }, id) {
+      // Depreciated, Need to remove and fix functions calling it
       const created = state.partners[id].createdOn;
 
       fb.partnersCollection
@@ -266,12 +261,12 @@ const store = new Vuex.Store({
     newPartner({ state, dispatch, commit }, params) {
       fb.partnersCollection
         .add({
-          createdOn: new Date(),
+          createdOn: new Date().toISOString(),
           userId: state.currentUser.uid,
           name: params.name,
           gender: params.gender,
           location: params.location,
-          approxDateMet: params.approxDateMet,
+          approxDateMet: params.approxDateMet.toISOString(),
           description: params.description,
         })
         .then(() => {
@@ -284,12 +279,12 @@ const store = new Vuex.Store({
     newSex({ state, dispatch, commit }, params) {
       fb.sexCollection
         .add({
-          createdOn: new Date(),
+          createdOn: new Date().toISOString(),
           userId: state.currentUser.uid,
           partnerId: state.partners[params.partner].uid,
           rating: params.rating,
           type: params.type,
-          date: params.date,
+          date: params.date.toISOString(),
           protection: params.protection,
         })
         .then(() => {
@@ -303,7 +298,7 @@ const store = new Vuex.Store({
     newFeedback({ state }, params) {
       fb.feedbackCollection
         .add({
-          createdOn: new Date(),
+          createdOn: new Date().toISOString(),
           userId: state.currentUser.uid,
           subject: params.subject,
           message: params.message,
@@ -316,11 +311,11 @@ const store = new Vuex.Store({
       fb.partnersCollection
         .doc(state.partnerId)
         .update({
-          updatedOn: new Date(),
+          updatedOn: new Date().toISOString(),
           name: params.name,
           gender: params.gender,
           location: params.location,
-          approxDateMet: params.approxDateMet,
+          approxDateMet: params.approxDateMet.toISOString(),
           description: params.description,
         })
         .then(() => {
@@ -335,7 +330,7 @@ const store = new Vuex.Store({
       fb.sexCollection
         .doc(state.sexId)
         .update({
-          updatedOn: new Date(),
+          updatedOn: new Date().toISOString(),
           rating: params.rating,
           type: params.type,
           protection: params.protection,
@@ -353,7 +348,7 @@ const store = new Vuex.Store({
       fb.partnersCollection
         .doc(uid)
         .update({
-          updatedOn: new Date(),
+          updatedOn: new Date().toISOString(),
           rating,
         })
         .then(() => {
@@ -365,7 +360,7 @@ const store = new Vuex.Store({
     },
     deletePartner({ state, commit }, id) {
       fb.partnersCollection
-        .doc(state.partnerId)
+        .doc(state.partners[id].uid)
         .delete()
         .then(() => {
           commit('DELETE_PARTNER', id);
@@ -377,7 +372,7 @@ const store = new Vuex.Store({
     },
     deleteSex({ state, commit }, id) {
       fb.sexCollection
-        .doc(state.sexId)
+        .doc(state.sex[id].uid)
         .delete()
         .then(() => {
           commit('DELETE_SEX', id);

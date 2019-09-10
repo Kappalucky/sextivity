@@ -3,7 +3,7 @@
     <section class="section calendar">
       <vue-calendar
         :show-limit="3"
-        :events="sex"
+        :events="events"
         @day-clicked="dayClicked"
         @event-clicked="eventClicked"
       ></vue-calendar>
@@ -32,15 +32,11 @@ export default {
 		};
 	},
 	computed: {
-		...mapState(['sex']),
+		...mapState(['sex', 'events']),
 	},
 	methods: {
 		close() {
 			this.isModalActive = !this.isModalActive;
-		},
-		formatDate(date) {
-			let unix = moment.unix(date);
-			return moment(unix).format('MMM YYYY');
 		},
 		dayClicked(day) {
 			// Create Event
