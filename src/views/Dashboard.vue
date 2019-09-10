@@ -78,7 +78,7 @@
             >{{ props.row.location }}</b-table-column>
 
             <b-table-column field="seconds" label="Date Met" sortable centered>
-              <span class="tag is-success">{{ formatDate(props.row.approxDateMet.seconds) }}</span>
+              <span class="tag is-success">{{ formatDate(props.row.approxDateMet) }}</span>
             </b-table-column>
 
             <b-table-column centered>
@@ -112,7 +112,7 @@
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapMutations, mapActions } from 'vuex';
 import moment from 'moment';
 import AddPartnerModal from '@/components/AddPartnerModal.vue';
 import EditPartnerModal from '@/components/EditPartnerModal.vue';
@@ -143,7 +143,7 @@ export default {
 		...mapState(['partners', 'sex']),
 	},
 	methods: {
-		...mapActions(['getPartnerId', 'getPartner', 'deletePartner']),
+		...mapActions(['getPartner', 'deletePartner']),
 		close() {
 			this.isModalActive = !this.isModalActive;
 		},
@@ -151,16 +151,12 @@ export default {
 			this.editPartnerModal = !this.editPartnerModal;
 		},
 		partnerEdit(id) {
-			// Sets uid of Partner instance
-			this.getPartnerId(id);
 			// Sets partner object in store
 			this.getPartner(id);
 			// Open Modal
 			this.editPartnerModal = true;
 		},
 		partnerDelete(id) {
-			// Sets uid of Partner instance
-			this.getPartnerId(id);
 			this.deletePartner(id)
 				.then(() => {
 					this.$buefy.snackbar.open({
@@ -174,8 +170,7 @@ export default {
 				.catch(error => console.error(error));
 		},
 		formatDate(date) {
-			let unix = moment.unix(date);
-			return moment(unix).format('MMM YYYY');
+			return moment(date).format('MMM YYYY');
 		},
 	},
 };

@@ -15,8 +15,6 @@ const store = new Vuex.Store({
     userProfile: {}, // User details
     partners: [], // Array of Partners User had sex with
     partner: {}, // Single Partner instance details
-    partnerId: null, // Single Partner instance UID
-    sexId: null,
     individualSex: {}, // Single Sex instance details
     realTimePartners: [], // Array to handle incoming updates to Partner Collection
     sex: [], // Array of Days User had sex
@@ -53,12 +51,6 @@ const store = new Vuex.Store({
     SET_PARTNER(state, payload) {
       state.partner = payload;
     },
-    SET_PARTNER_ID(state, payload) {
-      state.partnerId = payload;
-    },
-    SET_SEX_ID(state, payload) {
-      state.sexId = payload;
-    },
     SET_SEX(state, payload) {
       if (payload) {
         state.sex = payload;
@@ -79,13 +71,12 @@ const store = new Vuex.Store({
               title: 'Sex',
               sexUid: obj.uid,
               sexId: obj.id,
-              start: moment(value.date).format('MM-DD-YYYY'),
+              start: moment(value).format('MM-DD-YYYY'),
               end: null,
             });
           }
         });
       });
-
       state.events = events;
     },
     SET_INDIVIDUAL_SEX(state, payload) {
@@ -186,10 +177,8 @@ const store = new Vuex.Store({
     getPartner({ state, commit }, id) {
       const partner = state.partners[id];
 
-      // Convert partner instance UNIX timestamp to Date
-      // !TO-DO: Fix 'invalid date' error in dashboard date section
-      const partnerDate = moment.unix(partner.approxDateMet.seconds);
-      partner.approxDateMet = moment(partnerDate).toDate();
+      const partnerDate = moment(partner.approxDateMet).toDate();
+      partner.approxDateMet = partnerDate;
 
       commit('SET_PARTNER', partner);
     },
@@ -218,25 +207,10 @@ const store = new Vuex.Store({
     getIndividualSex({ state, commit }, id) {
       const sex = state.sex[id];
 
-      // Convert partner instance UNIX timestamp to Date
-      // !TO-DO: Fix 'invalid date' error in dashboard date section
-      // const sexDate = moment.unix(sex.date.seconds);
-      // sex.date = moment(sexDate).toDate();
+      const sexDate = moment(sex.date).toDate();
+      sex.date = sexDate;
 
       commit('SET_INDIVIDUAL_SEX', sex);
-    },
-    getPartnerId({ state, commit }, id) {
-      // Depreciated, Need to remove and fix functions calling it
-      const created = state.partners[id].createdOn;
-
-      fb.partnersCollection
-        .where('createdOn', '==', created)
-        .get()
-        .finally(docs => {
-          docs.forEach(doc => {
-            commit('SET_PARTNER_ID', doc.id);
-          });
-        });
     },
     getAverage({ state, dispatch }, uid) {
       const partner = state.sex.filter(sex => sex.partnerId === uid);
@@ -289,7 +263,7 @@ const store = new Vuex.Store({
         })
         .then(() => {
           dispatch('getSex');
-          // dispatch('getAverage', state.partnerId);
+          dispatch('getAverage', state.partners[params.partner].uid);
         })
         .catch(error => {
           commit('SET_ERROR', error);
@@ -309,7 +283,7 @@ const store = new Vuex.Store({
     },
     updatePartner({ state, dispatch, commit }, params) {
       fb.partnersCollection
-        .doc(state.partnerId)
+        .doc(state.partners[params.id].uid)
         .update({
           updatedOn: new Date().toISOString(),
           name: params.name,
@@ -326,9 +300,9 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    updateIndividualSex({ state, dispatch, commit }, params) {
+    updateIndividualSex({ dispatch, commit }, params) {
       fb.sexCollection
-        .doc(state.sexId)
+        .doc(params.uid)
         .update({
           updatedOn: new Date().toISOString(),
           rating: params.rating,

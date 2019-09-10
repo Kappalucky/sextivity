@@ -1,12 +1,19 @@
 <template>
-  <b-modal :active.sync="$parent.isModalActive" has-modal-card>
+  <b-modal :active.sync="$parent.isModalActive" has-modal-card :on-cancel="close">
     <div class="modal-card container">
       <header class="modal-card-head">
         <p class="modal-card-title">Add Sex</p>
       </header>
       <section class="modal-card-body">
         <b-field>
-          <b-select placeholder="Partner" icon="user" icon-pack="fas" v-model="sex.partner">
+          <b-select
+            class="select-center"
+            placeholder="Partner"
+            icon="user"
+            icon-pack="fas"
+            v-model="sex.partner"
+            required
+          >
             <template v-for="partner in partners">
               <option :key="partner.id" :value="partner.id">{{ partner.name }}</option>
             </template>
@@ -14,11 +21,11 @@
         </b-field>
 
         <b-field label="Rating">
-          <b-slider :min="1" :max="5" ticks v-model.number="sex.rating"></b-slider>
+          <b-slider :min="1" :max="5" ticks v-model.number="sex.rating" required></b-slider>
         </b-field>
 
         <b-field label="Activities">
-          <b-select multiple native-size="3" v-model="sex.type">
+          <b-select class="select-center" multiple native-size="3" v-model="sex.type" required>
             <option value="Anal">Anal</option>
             <option value="Foreplay">Foreplay</option>
             <option value="Oral">Oral</option>
@@ -26,16 +33,18 @@
           </b-select>
         </b-field>
 
-        <b-field label="Protection">
-          <b-radio-button v-model="sex.protection" native-value="false" type="is-danger">
-            <b-icon icon="close"></b-icon>
-            <span>Nope</span>
-          </b-radio-button>
+        <b-field class="protection" label="Protection">
+          <div class="protection-buttons" required>
+            <b-radio-button v-model="sex.protection" native-value="false" type="is-danger">
+              <b-icon icon="close"></b-icon>
+              <span>Nope</span>
+            </b-radio-button>
 
-          <b-radio-button v-model="sex.protection" native-value="true" type="is-success">
-            <b-icon icon="check"></b-icon>
-            <span>Yup</span>
-          </b-radio-button>
+            <b-radio-button v-model="sex.protection" native-value="true" type="is-success">
+              <b-icon icon="check"></b-icon>
+              <span>Yup</span>
+            </b-radio-button>
+          </div>
         </b-field>
       </section>
       <footer class="modal-card-foot footer-buttons">
@@ -62,7 +71,7 @@ export default {
 			},
 			default: {
 				partner: '',
-				rating: Number,
+				rating: null,
 				type: [],
 				protection: '',
 			},
@@ -82,16 +91,23 @@ export default {
 			this.newSex(params)
 				.then(() => {
 					this.$parent.close();
-					this.partner = Object.assign({}, this.default);
+					this.sex = Object.assign({}, this.default);
 				})
 				.catch(error => console.error(error));
 		},
 		close() {
-			this.partner = Object.assign({}, this.default);
+			this.sex = Object.assign({}, this.default);
 			this.$parent.close();
 		},
 	},
 };
 </script>
 <style scoped>
+.protection {
+	justify-content: center;
+}
+.protection-buttons {
+	display: flex;
+	justify-content: center;
+}
 </style>
