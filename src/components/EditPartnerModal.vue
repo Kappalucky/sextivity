@@ -92,7 +92,7 @@ export default {
 		...mapMutations(['SET_PARTNER']),
 		update() {
 			this.updatePartner(this.partner)
-				.then(() => this.$parent.closeEdit())
+				.then(() => this.close())
 				.catch(error => console.error(error));
 		},
 		close() {

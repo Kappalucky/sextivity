@@ -8,26 +8,34 @@
         @event-clicked="eventClicked"
       ></vue-calendar>
     </section>
-    <!-- Add Partner Modal -->
-    <section class="sex-modal-add">
+    <!-- Add Sex Modal -->
+    <section class="sex-modal">
       <add-sex :calendarDate="calendarDate" />
     </section>
-    <!-- End Add Partner Modal -->
+    <!-- End Add Sex Modal -->
+    <!-- Edit Sex Modal -->
+    <section class="sex-modal">
+      <edit-sex />
+    </section>
+    <!-- End Edit Sex Modal -->
   </div>
 </template>
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapMutations } from 'vuex';
 import moment from 'moment';
 import AddSex from '@/components/AddSex.vue';
+import EditSex from '@/components/EditSex.vue';
 
 export default {
 	name: 'Calendar',
 	components: {
 		AddSex,
+		EditSex,
 	},
 	data() {
 		return {
 			isModalActive: false,
+			editSexModal: false,
 			calendarDate: Date,
 		};
 	},
@@ -35,19 +43,23 @@ export default {
 		...mapState(['sex', 'events']),
 	},
 	methods: {
+		...mapActions(['getIndividualSex']),
 		close() {
 			this.isModalActive = !this.isModalActive;
+		},
+		closeEdit() {
+			this.editSexModal = !this.editSexModal;
 		},
 		dayClicked(day) {
 			// Create Event
 			this.calendarDate = day.date;
 			this.isModalActive = true;
-			console.log(day);
-			// day.date == date to log for sex object
 		},
 		eventClicked(event) {
-			// Do something...
-			console.log(event);
+			// Set sex object in store
+			this.getIndividualSex(event.sexId);
+			// Open modal
+			this.editSexModal = true;
 		},
 	},
 	created() {

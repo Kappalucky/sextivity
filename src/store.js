@@ -210,6 +210,12 @@ const store = new Vuex.Store({
       const sexDate = moment(sex.date).toDate();
       sex.date = sexDate;
 
+      const partnerObj = state.partners
+        .filter(partner => partner.uid === sex.partnerId)
+        .find(e => e.id);
+
+      sex.partner = partnerObj;
+
       commit('SET_INDIVIDUAL_SEX', sex);
     },
     getAverage({ state, dispatch }, uid) {
