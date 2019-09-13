@@ -86,7 +86,6 @@ export default {
 		createSex() {
 			const params = this.sex;
 			params.date = this.calendarDate;
-			console.log(params);
 
 			this.newSex(params)
 				.then(() => {

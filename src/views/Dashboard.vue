@@ -76,11 +76,16 @@
             </b-table-column>
 
             <b-table-column
-              field="user.last_name"
+              field="partners.location"
               label="Location"
               sortable
               centered
             >{{ props.row.location }}</b-table-column>
+
+            <b-table-column field="partners.rating" label="Rating" sortable centered>
+              <template v-if="props.row.rating">{{ props.row.rating.toFixed(2) }}</template>
+              <template v-else>No rating yet</template>
+            </b-table-column>
 
             <b-table-column field="seconds" label="Date Met" sortable centered>
               <span class="tag is-success">{{ formatDate(props.row.approxDateMet) }}</span>

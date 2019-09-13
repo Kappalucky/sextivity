@@ -3,7 +3,7 @@
     <b-navbar>
       <template slot="brand">
         <b-navbar-item href="/">
-          <p>Sextivity</p>
+          <p class="navbar-title">Sextivity</p>
         </b-navbar-item>
       </template>
       <template v-if="isLoggedIn" slot="start">
@@ -41,28 +41,32 @@
 import { mapGetters } from 'vuex';
 
 export default {
-  name: 'Navbar',
-  computed: {
-    ...mapGetters(['isLoggedIn'])
-  },
-  methods: {
-    logout() {
-      this.$store.dispatch('logout').then(() => {
-        this.$router.push('/');
-      });
-    },
-  },
+	name: 'Navbar',
+	computed: {
+		...mapGetters(['isLoggedIn']),
+	},
+	methods: {
+		logout() {
+			this.$store.dispatch('logout').then(() => {
+				this.$router.push('/');
+			});
+		},
+	},
 };
 </script>
 
 <style scoped>
 .navigation {
-  /*border-bottom: 1px solid #e2e2e2;*/
-  margin-bottom: 1rem;
-  box-shadow: -1px -7px 9px 5px black;
+	/*border-bottom: 1px solid #e2e2e2;*/
+	margin-bottom: 1rem;
+	box-shadow: -1px -7px 9px 5px black;
 }
 .navbar-dropdown-end {
-  display: flex;
-  justify-content: center;
+	display: flex;
+	justify-content: center;
+}
+.navbar-title {
+	font-family: 'Molle', cursive;
+	color: #88c4da;
 }
 </style>

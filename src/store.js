@@ -82,6 +82,13 @@ const store = new Vuex.Store({
     SET_INDIVIDUAL_SEX(state, payload) {
       state.individualSex = payload;
     },
+    SET_AVERAGES({ state, dispatch }) {
+      if (state.sex.length !== 0) {
+        state.partners.forEach(obj => {
+          dispatch('getAverage', obj.partnerId);
+        });
+      }
+    },
     SET_ERROR(state, payload) {
       state.error = payload;
     },
@@ -100,15 +107,14 @@ const store = new Vuex.Store({
       );
       state.sex = newObject;
     },
-    LOGOUT(state) {
+    LOGOUT({ state, commit }) {
       state.error = '';
       state.authStatus = '';
       state.authError = '';
-      this.commit('setCurrentUser', null);
-      this.commit('setUserProfile', {});
-      this.commit('setPartners', []);
-      this.commit('setPartnerId', null);
-      this.commit('setSex', []);
+      commit('setCurrentUser', null);
+      commit('setUserProfile', {});
+      commit('setPartners', []);
+      commit('setSex', []);
     },
   },
   actions: {
@@ -197,8 +203,8 @@ const store = new Vuex.Store({
             sexArray.push(sex);
             index += 1;
           });
-          commit('SET_EVENTS', sexArray);
           commit('SET_SEX', sexArray);
+          commit('SET_EVENTS', sexArray);
         })
         .catch(error => {
           commit('SET_ERROR', error);
@@ -213,10 +219,23 @@ const store = new Vuex.Store({
       commit('SET_INDIVIDUAL_SEX', sex);
     },
     getAverage({ state, dispatch }, uid) {
+      // Does not get updated state sex array before filter
+      // have to add object in sex array more than once to get refresh
       const partner = state.sex.filter(sex => sex.partnerId === uid);
-      const average =
-        partner.reduce((acc, sex) => acc + sex.rating, 0) / partner.length;
-      dispatch('updateRating', uid, average);
+      if (partner.length === 0) {
+        // console.log('partner at 0:', partner);
+        dispatch('getAverage');
+      } else {
+        // console.log('partners:', partner);
+        const average =
+          partner.reduce((acc, sex) => acc + sex.rating, 0) / partner.length;
+        // console.log('average', average);
+        const data = {
+          uid,
+          average,
+        };
+        dispatch('updateRating', data);
+      }
     },
     newUser({ dispatch, commit }, uid, params) {
       fb.usersCollection
@@ -318,12 +337,12 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    updateRating({ dispatch }, uid, rating) {
+    updateRating({ dispatch }, params) {
       fb.partnersCollection
-        .doc(uid)
+        .doc(params.uid)
         .update({
           updatedOn: new Date().toISOString(),
-          rating,
+          rating: params.average,
         })
         .then(() => {
           dispatch('getPartners');
