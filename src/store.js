@@ -107,14 +107,15 @@ const store = new Vuex.Store({
       );
       state.sex = newObject;
     },
-    LOGOUT({ state, commit }) {
-      state.error = '';
-      state.authStatus = '';
-      state.authError = '';
-      commit('setCurrentUser', null);
-      commit('setUserProfile', {});
-      commit('setPartners', []);
-      commit('setSex', []);
+    LOGOUT() {
+      store.state.error = '';
+      store.state.authStatus = '';
+      store.state.authError = '';
+      store.state.currentUser = null;
+      store.state.userProfile = {};
+      store.state.partners = [];
+      store.state.sex = [];
+      store.state.events = [];
     },
   },
   actions: {
@@ -375,15 +376,8 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    logout({ commit }) {
-      fb.auth
-        .signOut()
-        .then(() => {
-          commit('LOGOUT');
-        })
-        .catch(error => {
-          commit('SET_ERROR', error);
-        });
+    logout({ state, commit }) {
+      fb.auth.signOut();
     },
   },
   getters: {
@@ -407,5 +401,8 @@ fb.auth.onAuthStateChanged(user => {
     });
 
     // !TO-DO: Need to add separate array to handle collection updates
+  } else {
+    store.commit('SET_CURRENT_USER', null);
+    store.commit('LOGOUT');
   }
 });

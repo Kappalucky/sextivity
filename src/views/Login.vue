@@ -50,38 +50,39 @@
 import { mapState } from 'vuex';
 
 export default {
-  name: 'Login',
-  data() {
-    return {
-      loginForm: {
-        email: '',
-        password: '',
-      },
-      performingRequest: false,
-      errorMsg: '',
-    };
-  },
-  computed: {
-    ...mapState(['authError', 'authStatus'])
-  },
-  methods: {
-    toggleForm() {
-      this.errorMsg = '';
-    },
-    login() {
-      this.performingRequest = true;
+	name: 'Login',
+	data() {
+		return {
+			loginForm: {
+				email: '',
+				password: '',
+			},
+			performingRequest: false,
+			errorMsg: '',
+		};
+	},
+	computed: {
+		...mapState(['authError', 'authStatus']),
+	},
+	methods: {
+		toggleForm() {
+			this.errorMsg = '';
+		},
+		login() {
+			this.performingRequest = true;
 
-      this.$store.dispatch('loginWithEmail', {
-        email: this.loginForm.email,
-        password: this.loginForm.password,
-      })
-      .then(() => {
-        this.performingRequest = false;
-        this.$router.push('/dashboard');
-      })
-      .catch(error => console.error(error));
-    },
-  },
+			this.$store
+				.dispatch('loginWithEmail', {
+					email: this.loginForm.email,
+					password: this.loginForm.password,
+				})
+				.then(() => {
+					this.performingRequest = false;
+					this.$router.push('/dashboard').catch(err => console.log(err));
+				})
+				.catch(error => console.error(error));
+		},
+	},
 };
 </script>
 

@@ -19,9 +19,7 @@ firebase.initializeApp(config);
 // Firebase utils
 const db = firebase.firestore();
 const auth = firebase.auth();
-const {
-  currentUser
-} = auth;
+const { currentUser } = auth;
 
 // Firebase collections
 const usersCollection = db.collection('users'); // User Profile data

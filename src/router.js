@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import firebase from 'firebase';
+import store from './store.js';
 
 import Home from './views/Home.vue';
 import Dashboard from './views/Dashboard.vue';
@@ -18,22 +19,9 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '*',
-      redirect: '/dashboard',
-    },
-    {
-      path: '/',
-      // name: 'Home',
-      // component: Home,
-      redirect: '/login',
-    },
-    {
       path: '/dashboard',
       name: 'Dashboard',
       component: Dashboard,
-      meta: {
-        requiresAuth: true,
-      },
     },
     {
       path: '/login',
@@ -75,12 +63,10 @@ router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
   const { currentUser } = firebase.auth();
 
-  if (requiresAuth && !currentUser) {
+  if (!currentUser && requiresAuth) {
     next('/login');
-  } else if (requiresAuth && currentUser) {
+  } else if (currentUser && !requiresAuth) {
     next();
-  } else if (!requiresAuth && currentUser) {
-    next('/dashboard');
   } else {
     next();
   }

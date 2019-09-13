@@ -85,45 +85,51 @@
 import { mapState } from 'vuex';
 
 export default {
-  name: 'Join',
-  data() {
-    return {
-      signupForm: {
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        confirmedPassword: '',
-      },
-      performingRequest: false,
-      errorMsg: '',
-    };
-  },
-  computed: {
-    ...mapState(['authError', 'authStatus'])
-  },
-  methods: {
-    toggleForm() {
-      this.errorMsg = '';
-    },
-    passwordMatch(password, confirmation) {
-      return password === confirmation ? true : false;
-    },
-    signup() {
-      this.performingRequest = true;
+	name: 'Join',
+	data() {
+		return {
+			signupForm: {
+				firstName: '',
+				lastName: '',
+				email: '',
+				password: '',
+				confirmedPassword: '',
+			},
+			performingRequest: false,
+			errorMsg: '',
+		};
+	},
+	computed: {
+		...mapState(['authError', 'authStatus']),
+	},
+	methods: {
+		toggleForm() {
+			this.errorMsg = '';
+		},
+		passwordMatch(password, confirmation) {
+			return password === confirmation ? true : false;
+		},
+		signup() {
+			this.performingRequest = true;
 
-      if (passwordMatch(this.signupForm.password, this.signupForm.confirmedPassword) == true) {
-        this.$store.dispatch('register', this.signupForm)
-        .then(() => {
-          this.performingRequest = false;
-          this.$router.push('/dashboard');
-        })
-        .catch(error => console.error(error));
-      } else {
-        console.error('Password do not match');
-      }
-    },
-  },
+			if (
+				this.passwordMatch(
+					this.signupForm.password,
+					this.signupForm.confirmedPassword,
+				) == true
+			) {
+				this.$store
+					.dispatch('register', this.signupForm)
+					.then(() => {
+						this.performingRequest = false;
+						this.$router.push('/dashboard');
+					})
+					.catch(error => console.error(error));
+			} else {
+				console.error('Password do not match');
+			}
+		},
+	},
 };
 </script>
 
