@@ -206,15 +206,9 @@ const store = new Vuex.Store({
     },
     getIndividualSex({ state, commit }, id) {
       const sex = state.sex[id];
-
+      // Changes Sex object date attribute from UTC to "Jan. 12th 2019" format
       const sexDate = moment(sex.date).toDate();
       sex.date = sexDate;
-
-      const partnerObj = state.partners
-        .filter(partner => partner.uid === sex.partnerId)
-        .find(e => e.id);
-
-      sex.partner = partnerObj;
 
       commit('SET_INDIVIDUAL_SEX', sex);
     },
@@ -338,24 +332,24 @@ const store = new Vuex.Store({
           this.commit('SET_ERROR', error);
         });
     },
-    deletePartner({ state, commit }, id) {
+    deletePartner({ state, commit, dispatch }, id) {
       fb.partnersCollection
         .doc(state.partners[id].uid)
         .delete()
         .then(() => {
-          commit('DELETE_PARTNER', id);
+          dispatch('getPartners');
           commit('SET_PARTNER', {});
         })
         .catch(error => {
           commit('SET_ERROR', error);
         });
     },
-    deleteSex({ state, commit }, id) {
+    deleteSex({ state, commit, dispatch }, id) {
       fb.sexCollection
         .doc(state.sex[id].uid)
         .delete()
         .then(() => {
-          commit('DELETE_SEX', id);
+          dispatch('getSex');
           commit('SET_INDIVIDUAL_SEX', {});
         })
         .catch(error => {
@@ -386,8 +380,8 @@ fb.auth.onAuthStateChanged(user => {
   if (user) {
     store.commit('SET_CURRENT_USER', user);
     store.dispatch('getUserProfile');
-    store.dispatch('getPartners');
     store.dispatch('getSex');
+    store.dispatch('getPartners');
 
     fb.usersCollection.doc(user.uid).onSnapshot(doc => {
       store.commit('SET_USER_PROFILE', doc.data());

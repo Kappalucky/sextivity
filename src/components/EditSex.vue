@@ -5,20 +5,33 @@
         <p class="modal-card-title">Edit Sex</p>
       </header>
       <section class="modal-card-body">
-        <b-field>
-          <b-select
-            class="select-center"
-            placeholder="Partner"
-            icon="user"
-            icon-pack="fas"
-            v-model="sex.partner"
-            required
-          >
-            <template v-for="partner in partners">
-              <option :key="partner.id" :value="partner.id">{{ partner.name }}</option>
-            </template>
-          </b-select>
-        </b-field>
+        <template v-if="!this.sex.partner && this.sex.partner !== 0">
+          <small style="color:red;">Partner Deleted</small>
+          <b-field label="Partner">
+            <b-select
+              class="select-center"
+              placeholder="Partner"
+              icon="user"
+              icon-pack="fas"
+              disabled
+            ></b-select>
+          </b-field>
+        </template>
+        <template v-else>
+          <b-field label="Partner">
+            <b-select
+              class="select-center"
+              placeholder="Partner"
+              icon="user"
+              icon-pack="fas"
+              v-model="sex.partner"
+            >
+              <template v-for="partner in partners">
+                <option :key="partner.id" :value="partner.id">{{ partner.name }}</option>
+              </template>
+            </b-select>
+          </b-field>
+        </template>
 
         <b-field label="Rating">
           <b-slider :min="1" :max="5" ticks v-model.number="sex.rating" required></b-slider>
@@ -51,7 +64,7 @@
         <button class="button" type="button" v-on:click="close()">Close</button>
         <template>
           <button class="button is-primary" @click="editSex()">Update</button>
-          <button class="button is-danger" @click="deleteSex()">Delete</button>
+          <button class="button is-danger" @click="removeSex()">Delete</button>
         </template>
       </footer>
     </div>
@@ -82,8 +95,17 @@ export default {
 		...mapState(['individualSex', 'partners']),
 	},
 	watch: {
-		partner(newValue, oldValue) {
-			this.sex = Object.assign({}, this.individualSex);
+		individualSex(newValue, oldValue) {
+			this.sex = Object.assign({}, newValue);
+		},
+		sex(newValue, oldValue) {
+			const partnerId = this.partners.filter(
+				partner => partner.uid === this.sex.partnerId,
+			);
+			if (partnerId.length !== 0) {
+				const sexId = partnerId;
+				this.sex.partner = partnerId[0].id;
+			}
 		},
 	},
 	methods: {
@@ -96,7 +118,20 @@ export default {
 				})
 				.catch(error => console.error(error));
 		},
-		deleteSex() {},
+		removeSex() {
+			this.deleteSex(this.sex.id)
+				.then(() => {
+					this.$parent.closeEdit();
+					this.$buefy.snackbar.open({
+						message: 'Event deleted',
+						type: 'is-success',
+						position: 'is-top',
+						actionText: null,
+						indefinite: false,
+					});
+				})
+				.catch(error => console.error(error));
+		},
 		close() {
 			this.SET_INDIVIDUAL_SEX({});
 			this.$parent.closeEdit();

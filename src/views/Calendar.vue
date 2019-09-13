@@ -1,6 +1,10 @@
 <template>
   <div>
     <section class="section calendar">
+      <h2>Calendar</h2>
+      <p>
+        <small>Click on date to add Sex Event</small>
+      </p>
       <vue-calendar
         :show-limit="3"
         :events="events"

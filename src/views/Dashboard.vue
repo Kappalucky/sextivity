@@ -25,6 +25,11 @@
       <br />
       <!-- End Section Cards -->
 
+      <!-- Calendar Component -->
+      <calendar />
+      <br />
+      <!-- End Calendar Component -->
+
       <!-- Partners Datatable -->
       <section class="section partners">
         <h1>List of Partners</h1>
@@ -103,11 +108,6 @@
         <edit-partner-modal />
       </section>
       <!-- End Edit Partner Modal -->
-
-      <!-- Calendar Component -->
-      <calendar />
-      <br />
-      <!-- End Calendar Component -->
     </section>
   </div>
 </template>
