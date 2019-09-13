@@ -3,13 +3,15 @@ import Buefy from 'buefy';
 import 'buefy/dist/buefy.css';
 import moment from 'moment';
 import vueCalendar from 'vue2-simple-calendar';
+import './assets/vue2-simple-calendar.css';
 import App from './App.vue';
 import router from './router';
 import store from './store';
 
 const firebase = require('./firebaseConfig.js');
 
-Vue.use(Buefy, moment, vueCalendar);
+Vue.use(Buefy, moment);
+Vue.use(vueCalendar, {});
 
 Vue.config.productionTip = false;
 

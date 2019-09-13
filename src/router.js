@@ -23,8 +23,9 @@ const router = new Router({
     },
     {
       path: '/',
-      name: 'Home',
-      component: Home,
+      // name: 'Home',
+      // component: Home,
+      redirect: '/login',
     },
     {
       path: '/dashboard',
@@ -78,6 +79,8 @@ router.beforeEach((to, from, next) => {
     next('/login');
   } else if (requiresAuth && currentUser) {
     next();
+  } else if (!requiresAuth && currentUser) {
+    next('/dashboard');
   } else {
     next();
   }

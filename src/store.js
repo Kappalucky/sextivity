@@ -15,9 +15,10 @@ const store = new Vuex.Store({
     userProfile: {}, // User details
     partners: [], // Array of Partners User had sex with
     partner: {}, // Single Partner instance details
-    partnerId: null, // Single Partner instance UID
+    individualSex: {}, // Single Sex instance details
     realTimePartners: [], // Array to handle incoming updates to Partner Collection
     sex: [], // Array of Days User had sex
+    events: [],
     error: '',
   },
   mutations: {
@@ -50,14 +51,42 @@ const store = new Vuex.Store({
     SET_PARTNER(state, payload) {
       state.partner = payload;
     },
-    SET_PARTNER_ID(state, payload) {
-      state.partnerId = payload;
-    },
     SET_SEX(state, payload) {
       if (payload) {
         state.sex = payload;
       } else {
         state.sex = [];
+      }
+    },
+    SET_EVENTS(state, payload) {
+      const events = [];
+
+      payload.forEach(obj => {
+        Object.entries(obj).forEach(entry => {
+          const key = entry[0];
+          const value = entry[1];
+
+          if (key === 'date') {
+            events.push({
+              title: 'Sex',
+              sexUid: obj.uid,
+              sexId: obj.id,
+              start: moment(value).format('MM-DD-YYYY'),
+              end: null,
+            });
+          }
+        });
+      });
+      state.events = events;
+    },
+    SET_INDIVIDUAL_SEX(state, payload) {
+      state.individualSex = payload;
+    },
+    SET_AVERAGES({ state, dispatch }) {
+      if (state.sex.length !== 0) {
+        state.partners.forEach(obj => {
+          dispatch('getAverage', obj.partnerId);
+        });
       }
     },
     SET_ERROR(state, payload) {
@@ -72,15 +101,20 @@ const store = new Vuex.Store({
       );
       state.partners = newObject;
     },
-    LOGOUT(state) {
+    DELETE_SEX(state, sexId) {
+      const newObject = state.sex.filter(
+        sexInstance => sexInstance.id !== sexId,
+      );
+      state.sex = newObject;
+    },
+    LOGOUT({ state, commit }) {
       state.error = '';
       state.authStatus = '';
       state.authError = '';
-      this.commit('setCurrentUser', null);
-      this.commit('setUserProfile', {});
-      this.commit('setPartners', []);
-      this.commit('setPartnerId', null);
-      this.commit('setSex', []);
+      commit('setCurrentUser', null);
+      commit('setUserProfile', {});
+      commit('setPartners', []);
+      commit('setSex', []);
     },
   },
   actions: {
@@ -128,12 +162,13 @@ const store = new Vuex.Store({
       fb.partnersCollection
         .where('userId', '==', state.currentUser.uid)
         .get()
-        .then(querySnapshot => {
+        .then(queryDocumentSnapshot => {
           const partnersArray = [];
           let index = 0;
 
-          querySnapshot.forEach(doc => {
+          queryDocumentSnapshot.forEach(doc => {
             const partner = doc.data();
+            partner.uid = doc.id;
             partner.id = index;
             partnersArray.push(partner);
             index += 1;
@@ -148,45 +183,59 @@ const store = new Vuex.Store({
     getPartner({ state, commit }, id) {
       const partner = state.partners[id];
 
-      // Convert partner instance UNIX timestamp to Date
-      // !TO-DO: Fix 'invalid date' error in dashboard date section
-      const partnerDate = moment.unix(partner.approxDateMet.seconds);
-      partner.approxDateMet = moment(partnerDate).toDate();
+      const partnerDate = moment(partner.approxDateMet).toDate();
+      partner.approxDateMet = partnerDate;
 
       commit('SET_PARTNER', partner);
     },
     getSex({ state, commit }) {
       fb.sexCollection
-        .doc(state.currentUser.uid)
+        .where('userId', '==', state.currentUser.uid)
         .get()
-        .then(querySnapshot => {
+        .then(queryDocumentSnapshot => {
           const sexArray = [];
           let index = 0;
 
-          querySnapshot.forEach(doc => {
+          queryDocumentSnapshot.forEach(doc => {
             const sex = doc.data();
+            sex.uid = doc.id;
             sex.id = index;
             sexArray.push(sex);
             index += 1;
           });
-
           commit('SET_SEX', sexArray);
+          commit('SET_EVENTS', sexArray);
         })
         .catch(error => {
           commit('SET_ERROR', error);
         });
     },
-    getPartnerId({ state, commit }, id) {
-      const created = state.partners[id].createdOn;
+    getIndividualSex({ state, commit }, id) {
+      const sex = state.sex[id];
+      // Changes Sex object date attribute from UTC to "Jan. 12th 2019" format
+      const sexDate = moment(sex.date).toDate();
+      sex.date = sexDate;
 
-      fb.partnersCollection
-        .where('createdOn', '==', created)
-        .get()
-        .then(docs => {
-          docs.forEach(doc => {
-            commit('SET_PARTNER_ID', doc.id);
-          });
-        });
+      commit('SET_INDIVIDUAL_SEX', sex);
+    },
+    getAverage({ state, dispatch }, uid) {
+      // Does not get updated state sex array before filter
+      // have to add object in sex array more than once to get refresh
+      const partner = state.sex.filter(sex => sex.partnerId === uid);
+      if (partner.length === 0) {
+        // console.log('partner at 0:', partner);
+        dispatch('getAverage');
+      } else {
+        // console.log('partners:', partner);
+        const average =
+          partner.reduce((acc, sex) => acc + sex.rating, 0) / partner.length;
+        // console.log('average', average);
+        const data = {
+          uid,
+          average,
+        };
+        dispatch('updateRating', data);
+      }
     },
     newUser({ dispatch, commit }, uid, params) {
       fb.usersCollection
@@ -205,12 +254,12 @@ const store = new Vuex.Store({
     newPartner({ state, dispatch, commit }, params) {
       fb.partnersCollection
         .add({
-          createdOn: new Date(),
+          createdOn: new Date().toISOString(),
           userId: state.currentUser.uid,
           name: params.name,
           gender: params.gender,
           location: params.location,
-          approxDateMet: params.approxDateMet,
+          approxDateMet: params.approxDateMet.toISOString(),
           description: params.description,
         })
         .then(() => {
@@ -220,22 +269,20 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    newSex({ state, dispatch, commit }, id, params) {
-      // !TO-DO: Test within calendar if partner id can be added to params
-      dispatch('getPartnerId', id);
-
+    newSex({ state, dispatch, commit }, params) {
       fb.sexCollection
         .add({
-          createdOn: new Date(),
+          createdOn: new Date().toISOString(),
           userId: state.currentUser.uid,
-          partnerId: state.partnerId,
+          partnerId: state.partners[params.partner].uid,
           rating: params.rating,
           type: params.type,
-          date: params.date,
+          date: params.date.toISOString(),
           protection: params.protection,
         })
         .then(() => {
           dispatch('getSex');
+          dispatch('getAverage', state.partners[params.partner].uid);
         })
         .catch(error => {
           commit('SET_ERROR', error);
@@ -244,7 +291,7 @@ const store = new Vuex.Store({
     newFeedback({ state }, params) {
       fb.feedbackCollection
         .add({
-          createdOn: new Date(),
+          createdOn: new Date().toISOString(),
           userId: state.currentUser.uid,
           subject: params.subject,
           message: params.message,
@@ -255,13 +302,13 @@ const store = new Vuex.Store({
     },
     updatePartner({ state, dispatch, commit }, params) {
       fb.partnersCollection
-        .doc(state.partnerId)
+        .doc(state.partners[params.id].uid)
         .update({
-          updatedOn: new Date(),
+          updatedOn: new Date().toISOString(),
           name: params.name,
           gender: params.gender,
           location: params.location,
-          approxDateMet: params.approxDateMet,
+          approxDateMet: params.approxDateMet.toISOString(),
           description: params.description,
         })
         .then(() => {
@@ -272,13 +319,57 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    deletePartner({ state, commit }, id) {
+    updateIndividualSex({ dispatch, commit }, params) {
+      fb.sexCollection
+        .doc(params.uid)
+        .update({
+          updatedOn: new Date().toISOString(),
+          rating: params.rating,
+          type: params.type,
+          protection: params.protection,
+        })
+        .then(() => {
+          commit('SET_INDIVIDUAL_SEX', {});
+          dispatch('getSex');
+          dispatch('getAverage', params.partnerId);
+        })
+        .catch(error => {
+          commit('SET_ERROR', error);
+        });
+    },
+    updateRating({ dispatch }, params) {
       fb.partnersCollection
-        .doc(state.partnerId)
+        .doc(params.uid)
+        .update({
+          updatedOn: new Date().toISOString(),
+          rating: params.average,
+        })
+        .then(() => {
+          dispatch('getPartners');
+        })
+        .catch(error => {
+          this.commit('SET_ERROR', error);
+        });
+    },
+    deletePartner({ state, commit, dispatch }, id) {
+      fb.partnersCollection
+        .doc(state.partners[id].uid)
         .delete()
         .then(() => {
-          commit('DELETE_PARTNER', id);
+          dispatch('getPartners');
           commit('SET_PARTNER', {});
+        })
+        .catch(error => {
+          commit('SET_ERROR', error);
+        });
+    },
+    deleteSex({ state, commit, dispatch }, id) {
+      fb.sexCollection
+        .doc(state.sex[id].uid)
+        .delete()
+        .then(() => {
+          dispatch('getSex');
+          commit('SET_INDIVIDUAL_SEX', {});
         })
         .catch(error => {
           commit('SET_ERROR', error);
@@ -308,6 +399,7 @@ fb.auth.onAuthStateChanged(user => {
   if (user) {
     store.commit('SET_CURRENT_USER', user);
     store.dispatch('getUserProfile');
+    store.dispatch('getSex');
     store.dispatch('getPartners');
 
     fb.usersCollection.doc(user.uid).onSnapshot(doc => {
