@@ -54,7 +54,7 @@ export default {
 	justify-content: center;
 }
 .container-half {
-	width: 50%;
+	width: 100%;
 }
 .card-header-title {
 	justify-content: center;

@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
 	name: 'Navbar',
@@ -46,11 +46,11 @@ export default {
 		...mapGetters(['isLoggedIn']),
 	},
 	methods: {
-		logout() {
+		/*logout() {
 			this.$store.dispatch('logout').then(() => {
 				this.$router.push('/login');
-			});
-		},
+      });*/
+		...mapActions(['logout']),
 	},
 };
 </script>

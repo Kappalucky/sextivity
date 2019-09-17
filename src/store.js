@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import moment from 'moment';
+import router from './router';
 
 const fb = require('./firebaseConfig.js');
 
@@ -126,6 +127,7 @@ const store = new Vuex.Store({
         .then(response => {
           commit('AUTH_SUCCESS', response.user);
           dispatch('getUserProfile');
+          router.push('/dashboard');
         })
         .catch(error => {
           commit('AUTH_ERROR', error);
@@ -376,8 +378,10 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    logout({ state, commit }) {
+    logout({ commit }) {
       fb.auth.signOut();
+      commit('LOGOUT');
+      router.push('/login');
     },
   },
   getters: {
@@ -392,7 +396,7 @@ export default store;
 fb.auth.onAuthStateChanged(user => {
   if (user) {
     store.commit('SET_CURRENT_USER', user);
-    store.dispatch('getUserProfile');
+    // store.dispatch('getUserProfile');
     store.dispatch('getSex');
     store.dispatch('getPartners');
 
@@ -403,6 +407,6 @@ fb.auth.onAuthStateChanged(user => {
     // !TO-DO: Need to add separate array to handle collection updates
   } else {
     store.commit('SET_CURRENT_USER', null);
-    store.commit('LOGOUT');
+    store.dispatch('logout');
   }
 });
