@@ -22,6 +22,9 @@ const router = new Router({
       path: '/dashboard',
       name: 'Dashboard',
       component: Dashboard,
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       path: '/login',
@@ -56,6 +59,10 @@ const router = new Router({
       name: 'Error500',
       component: Error500,
     },
+    {
+      path: '*',
+      redirect: '/login',
+    },
   ],
 });
 
@@ -64,9 +71,13 @@ router.beforeEach((to, from, next) => {
   const { currentUser } = firebase.auth();
 
   if (!currentUser && requiresAuth) {
-    next('/login');
+    if (from.fullPath === '/login') {
+      console.log('already there');
+    } else {
+      next('/login');
+    }
   } else if (currentUser && !requiresAuth) {
-    next();
+    next('/dashboard');
   } else {
     next();
   }

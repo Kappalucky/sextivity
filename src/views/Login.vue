@@ -78,7 +78,7 @@ export default {
 				})
 				.then(() => {
 					this.performingRequest = false;
-					this.$router.push('/dashboard').catch(err => console.log(err));
+					//this.$router.push('/dashboard').catch(err => console.log(err));
 				})
 				.catch(error => console.error(error));
 		},

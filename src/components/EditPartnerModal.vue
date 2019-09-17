@@ -91,7 +91,7 @@ export default {
 		...mapActions(['updatePartner']),
 		...mapMutations(['SET_PARTNER']),
 		update() {
-			this.updatePartner(this.partner)
+			this.updatePartner(this.componentPartner)
 				.then(() => this.close())
 				.catch(error => console.error(error));
 		},
