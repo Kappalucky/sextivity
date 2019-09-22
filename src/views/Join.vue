@@ -7,71 +7,56 @@
         </header>
         <div class="card-content">
           <div class="content">
-            <div class="field">
-              <p class="control">
-                <label for="first-name">First Name</label>
-                <input
-                  class="input"
+            <form @submit.prevent="validateBeforeSubmit" v-on:keyup.enter="validateBeforeSubmit">
+              <b-field label="First name">
+                <b-input
                   id="first-name"
+                  name="firstName"
                   type="text"
                   placeholder="Vincent"
-                  v-model.trim="signupForm.firstName"
+                  v-model="signupForm.firstName"
                 />
-              </p>
-            </div>
-            <div class="field">
-              <p class="control">
-                <label for="last-name">Last Name</label>
-                <input
-                  class="input"
+              </b-field>
+              <b-field label="Last name">
+                <b-input
                   id="last-name"
+                  name="lastName"
                   type="text"
                   placeholder="Mayers"
-                  v-model.trim="signupForm.lastName"
+                  v-model="signupForm.lastName"
                 />
-              </p>
-            </div>
-            <div class="field">
-              <p class="control">
-                <label for="email">Email</label>
-                <input
-                  class="input"
+              </b-field>
+              <b-field label="Email">
+                <b-input
+                  name="email"
                   id="email"
                   type="email"
                   placeholder="you@email.com"
-                  v-model.trim="signupForm.email"
+                  v-model="signupForm.email"
                 />
-              </p>
-            </div>
-            <div class="field">
-              <p class="control">
-                <label for="password1">Password</label>
-                <input
-                  class="input"
-                  id="password1"
+              </b-field>
+              <b-field label="Password">
+                <b-input
+                  name="password"
                   type="password"
                   placeholder="********"
-                  v-model.trim="signupForm.password"
+                  v-model="signupForm.password"
                 />
-              </p>
-            </div>
-            <div class="field">
-              <p class="control">
-                <label for="password2">Confirm Password</label>
-                <input
-                  class="input"
-                  id="password2"
+              </b-field>
+              <b-field label="Confirm password">
+                <b-input
+                  name="confirm-password"
                   type="password"
                   placeholder="********"
-                  v-model.trim="signupForm.confirmedPassword"
+                  v-model="signupForm.confirmPassword"
                 />
-              </p>
-            </div>
-            <div class="field">
-              <p class="control footer-buttons-flex">
-                <button class="button is-success" @click.enter="signup">Join</button>
-              </p>
-            </div>
+              </b-field>
+              <div class="field">
+                <div class="control footer-buttons-flex">
+                  <button type="submit" class="button is-primary">Join</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
         <footer class="card-footer">
@@ -93,7 +78,7 @@ export default {
 				lastName: '',
 				email: '',
 				password: '',
-				confirmedPassword: '',
+				confirmPassword: '',
 			},
 			performingRequest: false,
 			errorMsg: '',
@@ -109,25 +94,27 @@ export default {
 		passwordMatch(password, confirmation) {
 			return password === confirmation ? true : false;
 		},
-		signup() {
-			this.performingRequest = true;
-
+		validateBeforeSubmit() {
 			if (
 				this.passwordMatch(
 					this.signupForm.password,
-					this.signupForm.confirmedPassword,
-				) == true
+					this.signupForm.confirmPassword,
+				) === true
 			) {
-				this.$store
-					.dispatch('register', this.signupForm)
-					.then(() => {
-						this.performingRequest = false;
-						this.$router.push('/dashboard');
-					})
-					.catch(error => console.error(error));
+				this.signup();
 			} else {
-				console.error('Password do not match');
+				return;
 			}
+		},
+		signup() {
+			this.performingRequest = true;
+			this.$store
+				.dispatch('register', this.signupForm)
+				.then(() => {
+					this.performingRequest = false;
+					//this.$router.push('/dashboard');
+				})
+				.catch(error => console.error(error));
 		},
 	},
 };

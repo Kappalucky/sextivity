@@ -7,35 +7,30 @@
         </header>
         <div class="card-content">
           <div class="content">
-            <div class="field">
-              <p class="control">
-                <label for="email">Email</label>
-                <input
-                  class="input"
-                  id="email"
+            <form @submit.prevent="validateBeforeSubmit" v-on:keyup.enter="validateBeforeSubmit">
+              <p v-if="authError">{{ authError }}</p>
+              <b-field label="Email">
+                <b-input
+                  name="email"
                   type="email"
                   placeholder="you@email.com"
-                  v-model.trim="loginForm.email"
+                  v-model="loginForm.email"
                 />
-              </p>
-            </div>
-            <div class="field">
-              <p class="control">
-                <label for="password">Password</label>
-                <input
-                  class="input"
-                  id="password"
+              </b-field>
+              <b-field label="Password">
+                <b-input
+                  name="password"
                   type="password"
                   placeholder="********"
-                  v-model.trim="loginForm.password"
+                  v-model="loginForm.password"
                 />
-              </p>
-            </div>
-            <div class="field">
-              <p class="control footer-buttons-flex">
-                <button class="button is-success" @click="login()">Login</button>
-              </p>
-            </div>
+              </b-field>
+              <div class="field">
+                <div class="control footer-buttons-flex">
+                  <button type="submit" class="button is-primary">Login</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
         <footer class="card-footer">
@@ -54,8 +49,8 @@ export default {
 	data() {
 		return {
 			loginForm: {
-				email: '',
-				password: '',
+				email: null,
+				password: null,
 			},
 			performingRequest: false,
 			errorMsg: '',
@@ -68,6 +63,14 @@ export default {
 		toggleForm() {
 			this.errorMsg = '';
 		},
+		validateBeforeSubmit() {
+			//this.$validator.validateAll().then(result => {
+			//if (result) {
+
+			this.login();
+			//}
+			//	});
+		},
 		login() {
 			this.performingRequest = true;
 
@@ -79,8 +82,7 @@ export default {
 				.then(() => {
 					this.performingRequest = false;
 					//this.$router.push('/dashboard').catch(err => console.log(err));
-				})
-				.catch(error => console.error(error));
+				});
 		},
 	},
 };

@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import firebase from 'firebase';
-import store from './store.js';
 
 import Home from './views/Home.vue';
 import Dashboard from './views/Dashboard.vue';
@@ -69,13 +68,10 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
   const { currentUser } = firebase.auth();
+  // console.log('CURRENT_USER:', currentUser);
 
   if (!currentUser && requiresAuth) {
-    if (from.fullPath === '/login') {
-      console.log('already there');
-    } else {
-      next('/login');
-    }
+    next('/login');
   } else if (currentUser && !requiresAuth) {
     next('/dashboard');
   } else {

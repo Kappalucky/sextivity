@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import moment from 'moment';
-import router from './router';
+import router from '@/router';
 
 const fb = require('./firebaseConfig.js');
 
@@ -127,6 +127,8 @@ const store = new Vuex.Store({
         .then(response => {
           commit('AUTH_SUCCESS', response.user);
           dispatch('getUserProfile');
+          dispatch('getSex');
+          dispatch('getPartners');
           router.push('/dashboard');
         })
         .catch(error => {
@@ -136,10 +138,11 @@ const store = new Vuex.Store({
     register({ dispatch, commit }, params) {
       fb.auth
         .createUserWithEmailAndPassword(params.email, params.password)
-        .then(response => {
-          // Create user instance
-          dispatch('newUser', response.user.uid, params);
-          commit('AUTH_SUCCESS', response.user);
+        .then(() => {
+          dispatch('loginWithEmail', {
+            email: params.email,
+            password: params.password,
+          });
         })
         .catch(error => {
           commit('AUTH_ERROR', error);
@@ -291,7 +294,7 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    newFeedback({ state }, params) {
+    newFeedback({ state, commit }, params) {
       fb.feedbackCollection
         .add({
           createdOn: new Date().toISOString(),
@@ -300,7 +303,7 @@ const store = new Vuex.Store({
           message: params.message,
         })
         .catch(error => {
-          this.commit('SET_ERROR', error);
+          commit('SET_ERROR', error);
         });
     },
     updatePartner({ state, dispatch, commit }, params) {
@@ -340,7 +343,7 @@ const store = new Vuex.Store({
           commit('SET_ERROR', error);
         });
     },
-    updateRating({ dispatch }, params) {
+    updateRating({ commit, dispatch }, params) {
       fb.partnersCollection
         .doc(params.uid)
         .update({
@@ -351,7 +354,7 @@ const store = new Vuex.Store({
           dispatch('getPartners');
         })
         .catch(error => {
-          this.commit('SET_ERROR', error);
+          commit('SET_ERROR', error);
         });
     },
     deletePartner({ state, commit, dispatch }, id) {
@@ -379,13 +382,14 @@ const store = new Vuex.Store({
         });
     },
     logout({ commit }) {
-      fb.auth.signOut();
-      commit('LOGOUT');
-      router.push('/login');
+      fb.auth.signOut().then(() => {
+        commit('LOGOUT');
+        router.push('/login');
+      });
     },
   },
   getters: {
-    isLoggedIn: state => !!state.currentUser,
+    isLoggedIn: state => state.currentUser != null,
     authStatus: state => state.authStatus,
   },
 });
@@ -393,20 +397,19 @@ const store = new Vuex.Store({
 export default store;
 
 // Handle page reload
+// Need to find more efficient way to check auth status without constantly making calls to firebase
 fb.auth.onAuthStateChanged(user => {
   if (user) {
     store.commit('SET_CURRENT_USER', user);
-    // store.dispatch('getUserProfile');
+    store.dispatch('getUserProfile');
     store.dispatch('getSex');
     store.dispatch('getPartners');
-
-    fb.usersCollection.doc(user.uid).onSnapshot(doc => {
+    /* fb.usersCollection.doc(user.uid).onSnapshot(doc => {
       store.commit('SET_USER_PROFILE', doc.data());
-    });
-
+    }); */
     // !TO-DO: Need to add separate array to handle collection updates
   } else {
     store.commit('SET_CURRENT_USER', null);
-    store.dispatch('logout');
+    // store.dispatch('logout');
   }
 });
