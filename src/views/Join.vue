@@ -8,24 +8,6 @@
         <div class="card-content">
           <div class="content">
             <form @submit.prevent="validateBeforeSubmit" v-on:keyup.enter="validateBeforeSubmit">
-              <b-field label="First name">
-                <b-input
-                  id="first-name"
-                  name="firstName"
-                  type="text"
-                  placeholder="Vincent"
-                  v-model="signupForm.firstName"
-                />
-              </b-field>
-              <b-field label="Last name">
-                <b-input
-                  id="last-name"
-                  name="lastName"
-                  type="text"
-                  placeholder="Mayers"
-                  v-model="signupForm.lastName"
-                />
-              </b-field>
               <b-field label="Email">
                 <b-input
                   name="email"
@@ -74,8 +56,6 @@ export default {
 	data() {
 		return {
 			signupForm: {
-				firstName: '',
-				lastName: '',
 				email: '',
 				password: '',
 				confirmPassword: '',
