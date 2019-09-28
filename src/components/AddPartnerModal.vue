@@ -5,49 +5,57 @@
         <p class="modal-card-title">Add Partner</p>
       </header>
       <section class="modal-card-body">
-        <b-field label="Name/Nickname">
-          <b-input type="text" v-model.trim="partner.name" placeholder="Guy from Tinder" required></b-input>
-        </b-field>
+        <form @submit.prevent="validate" v-on:keyup.enter="validate">
+          <b-field label="Name/Nickname">
+            <b-input type="text" v-model.trim="partner.name" placeholder="Guy from Tinder" required></b-input>
+          </b-field>
 
-        <b-field label="Gender">
-          <b-select class="select-center" placeholder="Gender" v-model="partner.gender">
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Transgender">Transgender</option>
-          </b-select>
-        </b-field>
+          <b-field label="Gender">
+            <b-select class="select-center" placeholder="Gender" v-model="partner.gender" required>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Transgender">Transgender</option>
+            </b-select>
+          </b-field>
 
-        <b-field label="Description">
-          <b-input
-            placeholder="Brown eyes, plump sexy lips, freckles..."
-            maxlength="200"
-            type="textarea"
-            v-model="partner.description"
-          ></b-input>
-        </b-field>
+          <b-field label="Description">
+            <b-input
+              placeholder="Brown eyes, plump sexy lips, freckles..."
+              maxlength="200"
+              type="textarea"
+              v-model="partner.description"
+              required
+            ></b-input>
+          </b-field>
 
-        <b-field label="Location Met">
-          <b-input
-            type="text"
-            v-model.trim="partner.location"
-            placeholder="London, England"
-            required
-          ></b-input>
-        </b-field>
+          <b-field label="Location Met">
+            <b-input
+              type="text"
+              v-model.trim="partner.location"
+              placeholder="London, England"
+              required
+            ></b-input>
+          </b-field>
 
-        <b-field label="Approximate Meeting Date">
-          <b-datepicker
-            type="month"
-            placeholder="Click to select..."
-            v-model="partner.approxDateMet"
-            icon="calendar-today"
-          ></b-datepicker>
-        </b-field>
+          <b-field label="Approximate Meeting Date">
+            <b-datepicker
+              type="month"
+              placeholder="Click to select..."
+              v-model="partner.approxDateMet"
+              icon="calendar-today"
+            ></b-datepicker>
+          </b-field>
+        </form>
       </section>
       <footer class="modal-card-foot footer-buttons">
         <button class="button" type="button" v-on:click="close()">Close</button>
         <template>
-          <button class="button is-primary" @click="createPartner()">Add</button>
+          <button
+            class="button is-primary"
+            type="submit"
+            v-on:click="validate"
+            v-on:keyup.enter="validate"
+          >Add</button>
         </template>
       </footer>
     </div>
@@ -80,6 +88,16 @@ export default {
 	},
 	methods: {
 		...mapActions(['newPartner']),
+		validate() {
+			if (
+				this.partner.name !== '' &&
+				this.partner.gender !== '' &&
+				this.partner.location !== '' &&
+				this.partner.description !== ''
+			) {
+				this.createPartner();
+			}
+		},
 		createPartner() {
 			this.newPartner(this.partner)
 				.then(() => {
