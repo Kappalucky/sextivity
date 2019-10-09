@@ -12,7 +12,6 @@
             icon="user"
             icon-pack="fas"
             v-model="sex.partner"
-            required
           >
             <template v-for="partner in partners">
               <option :key="partner.id" :value="partner.id">{{ partner.name }}</option>
@@ -21,11 +20,11 @@
         </b-field>
 
         <b-field label="Rating">
-          <b-slider :min="1" :max="5" ticks v-model.number="sex.rating" required></b-slider>
+          <b-slider :min="1" :max="5" ticks v-model.number="sex.rating"></b-slider>
         </b-field>
 
         <b-field label="Activities">
-          <b-select class="select-center" multiple native-size="3" v-model="sex.type" required>
+          <b-select class="select-center" multiple native-size="3" v-model="sex.type">
             <option value="Anal">Anal</option>
             <option value="Foreplay">Foreplay</option>
             <option value="Oral">Oral</option>
@@ -34,7 +33,7 @@
         </b-field>
 
         <b-field class="protection" label="Protection">
-          <div class="protection-buttons" required>
+          <div class="protection-buttons">
             <b-radio-button v-model="sex.protection" native-value="false" type="is-danger">
               <b-icon icon="close"></b-icon>
               <span>Nope</span>

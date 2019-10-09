@@ -1,0 +1,65 @@
+[debug] [2019-10-09T16:11:13.386Z] ----------------------------------------------------------------------
+[debug] [2019-10-09T16:11:13.388Z] Command:       /usr/bin/node /usr/local/bin/firebase deploy
+[debug] [2019-10-09T16:11:13.388Z] CLI Version:   7.4.0
+[debug] [2019-10-09T16:11:13.388Z] Platform:      linux
+[debug] [2019-10-09T16:11:13.388Z] Node Version:  v10.15.2
+[debug] [2019-10-09T16:11:13.420Z] Time:          Wed Oct 09 2019 12:11:13 GMT-0400 (Eastern Daylight Time)
+[debug] [2019-10-09T16:11:13.420Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-10-09T16:11:13.445Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-10-09T16:11:13.445Z] > authorizing via signed-in user
+[debug] [2019-10-09T16:11:13.445Z] [iam] checking project sextivity-cef50 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2019-10-09T16:11:13.447Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2019-10-09T16:11:13.447Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2019-10-09T16:11:13.560Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-09T16:11:13.659Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/sextivity-cef50:testIamPermissions  
+
+[debug] [2019-10-09T16:11:13.906Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-09T16:11:13.909Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/sextivity-cef50  
+ 
+[debug] [2019-10-09T16:11:14.140Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'sextivity-cef50'...
+[info] 
+[info] i  deploying hosting
+[debug] [2019-10-09T16:11:14.146Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/sextivity-cef50/versions  
+
+[debug] [2019-10-09T16:11:15.112Z] <<< HTTP RESPONSE 200
+[info] i  hosting[sextivity-cef50]: beginning deploy...
+[info] i  hosting[sextivity-cef50]: found 9 files in dist
+[debug] [2019-10-09T16:11:15.123Z] [hosting] hash cache [ZGlzdA] load error: lines is not defined
+[debug] [2019-10-09T16:11:15.722Z] [hosting] hash cache [ZGlzdA] stored for 9 files
+[debug] [2019-10-09T16:11:15.722Z] [hosting][hash queue][FINAL]
+[debug] [2019-10-09T16:11:15.722Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/sextivity-cef50/versions/beb37f824ce03777:populateFiles  
+ <request body omitted>
+[debug] [2019-10-09T16:11:16.546Z] <<< HTTP RESPONSE 200
+[debug] [2019-10-09T16:11:16.551Z] [hosting][populate queue][FINAL]
+[debug] [2019-10-09T16:11:16.551Z] [hosting] uploads queued: 4
+[debug] [2019-10-09T16:11:17.876Z] [hosting][upload queue][FINAL]
+[info] ✔  hosting[sextivity-cef50]: file upload complete
+[debug] [2019-10-09T16:11:17.876Z] [hosting] deploy completed after 2762ms
+[debug] [2019-10-09T16:11:17.941Z] [
+  {
+    "config": {
+      "public": "dist",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "site": "sextivity-cef50"
+    },
+    "site": "sextivity-cef50",
+    "version": "sites/sextivity-cef50/versions/beb37f824ce03777"
+  }
+]
+[info] i  hosting[sextivity-cef50]: finalizing version...
+[debug] [2019-10-09T16:11:17.942Z] >>> HTTP REQUEST PATCH https://firebasehosting.googleapis.com/v1beta1/sites/sextivity-cef50/versions/beb37f824ce03777?updateMask=status  
+

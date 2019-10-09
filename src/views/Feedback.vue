@@ -13,7 +13,6 @@
                   type="text"
                   v-model.trim="feedback.subject"
                   placeholder="Home page improvements"
-                  required
                 ></b-input>
               </b-field>
               <b-field label="Message">
@@ -22,7 +21,6 @@
                   maxlength="500"
                   v-model="feedback.message"
                   placeholder="The top of the page looks weird on my Iphone X..."
-                  required
                 ></b-input>
               </b-field>
             </div>

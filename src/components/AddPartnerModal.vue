@@ -7,11 +7,11 @@
       <section class="modal-card-body">
         <form @submit.prevent="validate" v-on:keyup.enter="validate">
           <b-field label="Name/Nickname">
-            <b-input type="text" v-model.trim="partner.name" placeholder="Guy from Tinder" required></b-input>
+            <b-input type="text" v-model.trim="partner.name" placeholder="Guy from Tinder"></b-input>
           </b-field>
 
           <b-field label="Gender">
-            <b-select class="select-center" placeholder="Gender" v-model="partner.gender" required>
+            <b-select class="select-center" placeholder="Gender" v-model="partner.gender">
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Transgender">Transgender</option>
@@ -24,7 +24,6 @@
               maxlength="200"
               type="textarea"
               v-model="partner.description"
-              required
             ></b-input>
           </b-field>
 
@@ -33,7 +32,6 @@
               type="text"
               v-model.trim="partner.location"
               placeholder="London, England"
-              required
             ></b-input>
           </b-field>
 

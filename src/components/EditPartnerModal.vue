@@ -6,12 +6,7 @@
       </header>
       <section class="modal-card-body">
         <b-field label="Name/Nickname">
-          <b-input
-            type="text"
-            v-model.trim="componentPartner.name"
-            placeholder="Guy from Tinder"
-            required
-          ></b-input>
+          <b-input type="text" v-model.trim="componentPartner.name" placeholder="Guy from Tinder"></b-input>
         </b-field>
 
         <b-field label="Gender">
@@ -36,7 +31,6 @@
             type="text"
             v-model.trim="componentPartner.location"
             placeholder="London, England"
-            required
           ></b-input>
         </b-field>
 
